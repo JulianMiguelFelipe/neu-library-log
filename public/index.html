@@ -3,90 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - NEU Library</title>
+    <title>NEU Library Visitors Log</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        /* NEW PREMIUM LOGIN STYLES */
+        #login-view {
+            background: radial-gradient(circle at top right, rgba(0, 74, 153, 0.3), transparent),
+                        radial-gradient(circle at bottom left, rgba(255, 204, 0, 0.1), transparent);
+        }
+
+       .kiosk-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 3rem 2rem !important; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            max-width: 700px; 
+            width: 90%;
+            transition: transform 0.3s ease;
+        }
+
+        .kiosk-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .main-title {
+            font-size: 3rem;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #ffffff, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        #emailInput {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 15px;
+            padding: 1.2rem;
+            font-weight: 600;
+            color: #004a99;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        #emailInput:focus {
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
+            transform: scale(1.02);
+        }
+
+        #qrToggle {
+            border-radius: 12px;
+            padding: 10px 25px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        /* Styles for Welcome View (Unchanged as requested) */
+        @keyframes welcomeReveal {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        #welcome-view.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: welcomeReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+            background: radial-gradient(circle at center, rgba(0, 74, 153, 0.4) 0%, transparent 70%);
+        }
+        .name-highlight {
+            font-size: 5rem;
+            background: linear-gradient(to bottom, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+        }
+        .success-animation { margin-bottom: 20px; }
+        .checkmark {
+            width: 100px; height: 100px;
+            border-radius: 50%; display: block;
+            stroke-width: 2; stroke: #fff;
+            stroke-miterlimit: 10;
+            box-shadow: inset 0px 0px 0px #7ac142;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+            margin: 0 auto;
+        }
+        .checkmark__circle {
+            stroke-dasharray: 166; stroke-dashoffset: 166;
+            stroke-width: 2; stroke-miterlimit: 10;
+            stroke: #7ac142; fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48; stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+        @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+        @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 50px #7ac142; } }
+    </style>
 </head>
 <body>
+    <audio id="beepSound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
 
-<div id="login-container" class="full-center">
-    <div class="auth-card">
-        <h3 class="neu-logo">NEU LIBRARY</h3>
-        <form id="loginForm">
-            <div class="mb-3">
-                <label class="form-label">Institutional Email</label>
-                <input type="email" id="loginEmail" class="form-control" required>
+    <div id="login-view" class="view active">
+        <div class="kiosk-card text-center">
+            <div class="mb-4">
+                <img src="https://neu.edu.ph/main/img/neu.png" style="width: 140px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));" class="mb-2">
+                <h1 class="fw-bold main-title">NEU LIBRARY</h1>
+                <div style="height: 3px; width: 60px; background: #ffcc00; margin: 10px auto; border-radius: 2px;"></div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" id="loginPassword" class="form-control" required>
+            
+            <p class="text-white opacity-75 mb-4 fs-5">Scan QR or enter Institutional Email</p>
+            
+            <div id="reader" class="mb-3 rounded-3 overflow-hidden shadow-sm" style="display:none; border: 2px solid #ffcc00;"></div>
+            
+            <button id="qrToggle" class="btn btn-warning mb-4" onclick="toggleScanner()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-qr-code-scan me-2" viewBox="0 0 16 16">
+                    <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5zM3 4.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2zm1 1v1h1v-1H4zM3 9.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2zm1 1v1h1v-1H4zM9.5 3a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-2zM10 4h1v1h-1V4zm.5 5.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 0 1H12v.5a.5.5 0 0 1-1 0v-.5h-.5a.5.5 0 0 1 0-1H11v-.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                Open QR Scanner
+            </button>
+            
+            <div class="px-4">
+                <input type="email" id="emailInput" class="form-control form-control-lg text-center" placeholder="firstname.lastname@neu.edu.ph" autofocus>
+                <p id="login-error" class="text-warning mt-3 fw-bold" style="display:none; text-shadow: 0 0 10px rgba(0,0,0,0.5);">⚠️ Invalid Email Domain</p>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Login</button>
-        </form>
-        <hr>
-        <button onclick="window.location.href='register.html'" class="btn btn-outline-secondary w-100">Create an Account</button>
+
+            <div class="mt-5 text-white-50 small" style="letter-spacing: 1px;">Press <span class="text-white fw-bold">[SPACEBAR]</span> to continue</div>
+        </div>
     </div>
-</div>
 
-<div id="welcome-screen">
-    <h1 id="welcome-name">Welcome, Name!</h1>
-    <h3 id="welcome-program">Program</h3>
-    <br>
-    <h2 class="fw-bold">Welcome to NEU Library!</h2>
-    <p class="mt-5 text-light opacity-75">Press [SPACEBAR] to return to login</p>
-</div>
+    <div id="purpose-view" class="view">
+        <h1 class="fw-bold">What is your purpose today?</h1>
+        <div class="purpose-grid">
+            <div class="purpose-btn" onclick="selectPurpose('Reading / Studying')">
+                <img src="https://cdn-icons-png.flaticon.com/512/3389/3389081.png">
+                <span>Reading / Studying</span>
+            </div>
+            <div class="purpose-btn" onclick="selectPurpose('Borrowing / Returning')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png">
+                <span>Borrowing / Returning</span>
+            </div>
+            <div class="purpose-btn" onclick="selectPurpose('Research / Computer Use')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2004/2004530.png">
+                <span>Research / Computer Use</span>
+            </div>
+            <div class="purpose-btn" onclick="selectPurpose('Other')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2354/2354551.png">
+                <span>Other Purposes</span>
+            </div>
+        </div>
+        <div id="other-field" class="mt-5" style="display:none; width: 500px;">
+            <input type="text" id="customReason" class="form-control form-control-lg" placeholder="Please specify your purpose...">
+            <button class="btn btn-warning btn-lg mt-3 w-100 fw-bold" onclick="submitOther()">Submit</button>
+        </div>
+    </div>
 
-<script>
-    const loginForm = document.getElementById('loginForm');
-    const loginContainer = document.getElementById('login-container');
-    const welcomeScreen = document.getElementById('welcome-screen');
-
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        // Ask for purpose of visit via prompt as requested
-        const reason = prompt("What is your purpose for visiting the library today?");
+    <div id="welcome-view" class="view">
+        <div class="success-animation">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+        </div>
         
-        if (!reason) {
-            alert("Purpose is required to enter.");
-            return;
+        <div class="text-center">
+            <h5 class="text-uppercase text-warning fw-bold mb-1" style="letter-spacing: 8px;">Access Granted</h5>
+            <p class="text-white opacity-50 mb-4">You are now checked in.</p>
+            
+            <h1 id="user-display-name" class="fw-bold name-highlight mb-2">-</h1>
+            
+            <div class="d-flex justify-content-center align-items-center gap-3 mb-5">
+                <div style="height: 2px; width: 50px; background: rgba(255,255,255,0.2);"></div>
+                <div id="user-display-status" class="fs-4 fw-bold text-white">-</div>
+                <div style="height: 2px; width: 50px; background: rgba(255,255,255,0.2);"></div>
+            </div>
+        </div>
+
+        <div class="mt-5 py-2 px-4 rounded-pill border border-light border-opacity-25 text-white-50 small">
+            Press <span class="text-warning fw-bold">[ SPACEBAR ]</span> for the next visitor
+        </div>
+    </div>
+
+    <div id="banned-view" class="view">
+        <h1 class="display-1 fw-bold mb-4">Access Denied</h1>
+        <p class="fs-3">You are currently banned from using the library facilities.<br>Please proceed to the Reception Desk for assistance.</p>
+        <div class="mt-5 p-2 border border-light rounded">Press [ SPACEBAR ] to return</div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let html5QrCode = null;
+        const emailInput = document.getElementById('emailInput');
+
+        function playSuccessSound() {
+            const beep = document.getElementById('beepSound');
+            beep.currentTime = 0;
+            beep.play().catch(e => console.log("Audio play blocked until interaction"));
         }
 
-        const credentials = {
-            email: document.getElementById('loginEmail').value,
-            password: document.getElementById('loginPassword').value,
-            reason: reason
-        };
+        async function toggleScanner() {
+            const reader = document.getElementById('reader');
+            const btn = document.getElementById('qrToggle');
+            if (!html5QrCode) {
+                reader.style.display = 'block';
+                btn.innerText = "Close Scanner";
+                html5QrCode = new Html5Qrcode("reader");
+                await html5QrCode.start({ facingMode: "user" }, { fps: 10, qrbox: 250 }, (decodedText) => {
+                    emailInput.value = decodedText;
+                    handleLogin();
+                    toggleScanner();
+                });
+            } else {
+                await html5QrCode.stop();
+                html5QrCode = null;
+                reader.style.display = 'none';
+                btn.innerText = "Open QR Scanner";
+            }
+        }
 
-        // Sending to Backend (Part 3)
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(credentials)
-        });
+        async function handleLogin() {
+            const email = emailInput.value.toLowerCase().trim();
+            const errorElement = document.getElementById('login-error');
+            const adminEmails = ['cics.dean@neu.edu.ph', 'admin@neu.edu.ph'];
+            
+            if (!email) return;
 
-        if (response.ok) {
+            if (adminEmails.includes(email)) {
+                window.location.href = "/admin-login.html";
+                return;
+            }
+            if (!email.endsWith('@neu.edu.ph')) {
+                errorElement.style.display = 'block';
+                return;
+            }
+
+            const response = await fetch('/api/check-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
             const data = await response.json();
             
-            // Success! Update Welcome Screen
-            document.getElementById('welcome-name').innerText = data.user.name;
-            document.getElementById('welcome-program').innerText = data.user.program;
+            if (data.exists) {
+                currentUser = data.user;
+                if (currentUser.is_blocked) showView('banned-view');
+                else showView('purpose-view');
+            } else {
+                window.location.href = `register.html?email=${email}`;
+            }
+        }
+
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function selectPurpose(reason) {
+            if (reason === 'Other') {
+                document.getElementById('other-field').style.display = 'block';
+                document.getElementById('customReason').focus();
+            } else {
+                logVisit(reason);
+            }
+        }
+
+        function submitOther() {
+            const reason = document.getElementById('customReason').value;
+            if(reason) logVisit(reason);
+        }
+
+        async function logVisit(reason) {
+            const response = await fetch('/api/record-entry', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: currentUser.id, reason: reason })
+            });
+            if (response.ok) {
+                playSuccessSound();
+                document.getElementById('user-display-name').innerText = currentUser.full_name;
+                const status = currentUser.role === 'Student' 
+                    ? `${currentUser.year_level} ${currentUser.program}` 
+                    : `${currentUser.position} - ${currentUser.department}`;
+                document.getElementById('user-display-status').innerText = status;
+                showView('welcome-view');
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            const currentView = document.querySelector('.view.active').id;
             
-            // Hide Login, Show Welcome
-            loginContainer.style.display = 'none';
-            welcomeScreen.style.display = 'flex';
-        } else {
-            alert('Invalid credentials or you are BLOCKED by Admin.');
-        }
-    });
-
-    // Spacebar Listener to Reset
-    window.addEventListener('keydown', (e) => {
-        if (e.code === 'Space' && welcomeScreen.style.display === 'flex') {
-            window.location.reload(); // Returns to Login Page
-        }
-    });
-</script>
-
+            if (e.code === 'Space' || e.key === 'Enter') {
+                if (currentView === 'login-view') {
+                    if (e.code === 'Space') e.preventDefault(); 
+                    handleLogin();
+                } else if (currentView === 'welcome-view' || currentView === 'banned-view') {
+                    window.location.reload();
+                }
+            }
+        });
+    </script>
 </body>
 </html>

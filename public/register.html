@@ -3,69 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - NEU Library</title>
+    <title>New Member Registration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-<body>
-
-<div class="full-center">
-    <div class="auth-card">
-        <h3 class="neu-logo">NEU LIBRARY</h3>
-        <h5 class="text-center mb-4">Create Account</h5>
-        
-        <form id="registerForm">
-            <div class="mb-3">
-                <label class="form-label">Full Name</label>
-                <input type="text" id="regName" class="form-control" placeholder="John Doe" required>
+<body class="registration-page">
+<div class="reg-card">
+    <div id="form-container">
+        <h2 class="text-center fw-bold mb-2">First Time?</h2>
+        <p class="text-center text-muted mb-4">Complete your profile to log your visit.</p>
+        <form id="regForm">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">First Name</label>
+                    <input type="text" id="firstName" class="form-control" placeholder="Enter first name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" id="lastName" class="form-control" placeholder="Enter last name" required>
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label">Institutional Email</label>
-                <input type="email" id="regEmail" class="form-control" placeholder="name@neu.edu.ph" required>
+                <input type="email" id="email" class="form-control" readonly>
             </div>
             <div class="mb-3">
-                <label class="form-label">Program/Course</label>
-                <input type="text" id="regProgram" class="form-control" placeholder="BSCS" required>
+                <label class="form-label">Role</label>
+                <select id="role" class="form-select" onchange="toggleRoleFields()" required>
+                    <option value="">Select Role</option>
+                    <option value="Student">Student</option>
+                    <option value="Faculty">Faculty</option>
+                </select>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" id="regPassword" class="form-control" required>
+            <div id="student-fields" style="display:none;">
+               <div class="mb-3">
+                    <label class="form-label">Program/Course</label>
+                    <select id="program" class="form-select">
+                        <option value="" selected disabled>Select Program</option>
+                        <option value="BSIT">BSIT (Information Technology)</option>
+                        <option value="BSCS">BSCS (Computer Science)</option>
+                        <option value="BSIS">BSIS (Information Systems)</option>
+                        <option value="BSA">BSA (Accountancy)</option>
+                        <option value="BSBA">BSBA (Business Administration)</option>
+                        <option value="BS Entrep">BS Entrep (Entrepreneurship)</option>
+                        <option value="BS REM">BS REM (Real Estate Management)</option>
+                        <option value="BS Psych">BS Psych (Psychology)</option>
+                        <option value="BS Bio">BS Bio (Biology)</option>
+                        <option value="BA PolSci">BA PolSci (Political Science)</option>
+                        <option value="BA Econ">BA Econ (Economics)</option>
+                        <option value="BSCE">BSCE (Civil Engineering)</option>
+                        <option value="BSEE">BSEE (Electrical Engineering)</option>
+                        <option value="BSME">BSME (Mechanical Engineering)</option>
+                        <option value="BSECE">BSECE (Electronics Engineering)</option>
+                        <option value="BS Agriculture">BS Agriculture</option>
+                        <option value="BS Nursing">BS Nursing</option>
+                        <option value="BS Criminology">BS Criminology</option>
+                        <option value="BSEd">BSEd (Secondary Education)</option>
+                        <option value="BEEd">BEEd (Elementary Education)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Year Level</label>
+                    <select id="yearLevel" class="form-select">
+                        <option value="" selected disabled>Select Year</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                    </select>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Register</button>
+            <div id="faculty-fields" style="display:none;">
+                <div class="mb-3">
+                    <label class="form-label">Department</label>
+                    <select id="department" class="form-select">
+                        <option value="" selected disabled>Select Department</option>
+                        <option value="CICS">CICS</option><option value="CBA">CBA</option>
+                        <option value="CEA">CEA</option><option value="CIT">CIT</option>
+                        <option value="CMT">CMT</option><option value="COE">COE</option>
+                        <option value="CHS">CHS</option><option value="CAS">CAS</option>
+                        <option value="COL">COL</option><option value="CON">CON</option>
+                        <option value="CTE">CTE</option><option value="CFA">CFA</option>
+                        <option value="CPSPA">CPSPA</option><option value="CMA">CMA</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Position</label>
+                    <select id="position" class="form-select">
+                        <option value="" selected disabled>Select Position</option>
+                        <option value="President">President</option>
+                        <option value="Vice President">Vice President</option>
+                        <option value="Dean">Dean</option>
+                        <option value="Associate Dean">Associate Dean</option>
+                        <option value="Department Chair">Department Chair</option>
+                        <option value="Program Head / Coordinator">Program Head / Coordinator</option>
+                        <option value="Faculty Member / Professor">Faculty Member / Professor</option>
+                        <option value="Assistant Professor">Assistant Professor</option>
+                        <option value="Instructor / Lecturer">Instructor / Lecturer</option>
+                        <option value="Support Staff">Support Staff</option>
+                        <option value="Maintenance Staff">Maintenance Staff</option>
+                        <option value="General Services">General Services</option>
+                        <option value="Facilities Team">Facilities Team</option>
+                        <option value="Operations Staff">Operations Staff</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" id="submitBtn" class="btn btn-primary w-100 mt-4 py-2 fw-bold">Create Profile & Get QR</button>
         </form>
-        
-        <div class="text-center mt-3">
-            <p>Already have an account? <a href="index.html">Login here</a></p>
+    </div>
+    <div id="qr-result">
+        <div class="text-center">
+            <div class="mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#198754" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+            </div>
+            <h2 class="fw-bold text-success mb-2">Registration Successful!</h2>
+            <div class="alert alert-primary py-3 mb-4">
+                <p class="mb-1"><strong>Check your NEU Email!</strong></p>
+                <p class="small mb-0">We sent your permanent QR code to <strong><span id="display-email"></span></strong>.</p>
+            </div>
+            <p class="text-muted fw-bold">OR TAKE A PHOTO OF THIS NOW:</p>
+            <div id="qrcode" class="mb-4 d-flex justify-content-center shadow-sm p-3 bg-white rounded" style="width: fit-content; margin: 0 auto;"></div>
+            <button class="btn btn-primary btn-lg w-100 py-3 fw-bold" onclick="window.location.href='index.html'">
+                Done! Proceed to Login
+            </button>
         </div>
     </div>
 </div>
-
 <script>
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailField = document.getElementById('email');
+    emailField.value = urlParams.get('email') || "";
+    function toggleRoleFields() {
+        const role = document.getElementById('role').value;
+        const studentFields = document.getElementById('student-fields');
+        const facultyFields = document.getElementById('faculty-fields');
+        studentFields.style.display = role === 'Student' ? 'block' : 'none';
+        facultyFields.style.display = role === 'Faculty' ? 'block' : 'none';
+        document.getElementById('program').required = (role === 'Student');
+        document.getElementById('yearLevel').required = (role === 'Student');
+        document.getElementById('department').required = (role === 'Faculty');
+        document.getElementById('position').required = (role === 'Faculty');
+    }
+    document.getElementById('regForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        const userData = {
-            name: document.getElementById('regName').value,
-            email: document.getElementById('regEmail').value,
-            program: document.getElementById('regProgram').value,
-            password: document.getElementById('regPassword').value
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Sending Email...";
+        const role = document.getElementById('role').value;
+        const email = emailField.value;
+        const payload = {
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            email: email,
+            role: role,
+            program: role === 'Student' ? document.getElementById('program').value : null,
+            yearLevel: role === 'Student' ? document.getElementById('yearLevel').value : null,
+            department: role === 'Faculty' ? document.getElementById('department').value : null,
+            position: role === 'Faculty' ? document.getElementById('position').value : null
         };
-
-        // This will talk to your backend later
-        const response = await fetch('/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
-        });
-
-        if (response.ok) {
-            alert('Registration Successful! Redirecting to login...');
-            window.location.href = 'index.html';
-        } else {
-            alert('Error creating account. Email might already exist.');
+        try {
+            const response = await fetch('/api/register', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(payload) 
+            });
+            if (response.ok) { 
+                document.getElementById('display-email').innerText = email;
+                document.getElementById('form-container').style.display = 'none';
+                document.getElementById('qr-result').style.display = 'block';
+                new QRCode(document.getElementById("qrcode"), {
+                    text: email,
+                    width: 200,
+                    height: 200,
+                    colorDark : "#004a99",
+                    colorLight : "#ffffff"
+                });
+            } else {
+                alert("Registration failed. Please try again.");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Create Profile & Get QR";
+            }
+        } catch (error) {
+            console.error("Connection error:", error);
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Create Profile & Get QR";
         }
     });
 </script>
-
 </body>
 </html>

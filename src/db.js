@@ -1,37 +1,33 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-// Connect using the URL from our .env file
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false }
-});
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 const initDb = async () => {
-  const queryText = `
-    CREATE TABLE IF NOT EXISTS users (
-      id SERIAL PRIMARY KEY,
-      name TEXT NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL,
-      program TEXT NOT NULL,
-      is_blocked BOOLEAN DEFAULT false
-    );
+    try {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                email TEXT UNIQUE NOT NULL,
+                full_name TEXT,
+                role TEXT,
+                program TEXT,
+                year_level TEXT,
+                department TEXT,
+                position TEXT,
+                is_blocked BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
 
-    CREATE TABLE IF NOT EXISTS logs (
-      id SERIAL PRIMARY KEY,
-      user_id INTEGER REFERENCES users(id),
-      reason TEXT NOT NULL,
-      visit_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `;
-
-  try {
-    await pool.query(queryText);
-    console.log("✅ Database Tables Initialized");
-  } catch (err) {
-    console.error("❌ Error initializing database:", err);
-  }
+            CREATE TABLE IF NOT EXISTS logs (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+                purpose TEXT NOT NULL,
+                visit_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        console.log("✅ Database schema verified.");
+    } catch (err) { console.error("❌ Database Init Error:", err.message); }
 };
 
 module.exports = { pool, initDb };
