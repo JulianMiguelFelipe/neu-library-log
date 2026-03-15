@@ -171,4 +171,14 @@ app.post('/api/admin/user/block', async (req, res) => {
     } catch (err) { res.status(500).send(err.message); }
 });
 
+// TEMPORARY: DELETE AFTER USE
+app.post('/api/admin/clear-all-data-secret', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM logs');
+        // await pool.query('DELETE FROM users'); // Only if you want to wipe users too
+        res.send("Database cleared successfully");
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
 app.listen(PORT, () => console.log(`🚀 Server on port ${PORT}`));
