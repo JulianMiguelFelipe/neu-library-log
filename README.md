@@ -14,7 +14,7 @@ The "front door" of the system where users scan their codes or register.
 - **Digital Registration:** Simple forms for first-time users to join the system.
 - **Visit Purpose:** Users can select why they are visiting, such as "Research" or "Study."
 
-![Kiosk Landing Page](https://drive.google.com/file/d/1Yqt1eXboQ_aA0eLRpYr_XKXyLdkF3jlz/view?usp=drive_link)
+![Kiosk Landing Page]([https://drive.google.com/file/d/1Yqt1eXboQ_aA0eLRpYr_XKXyLdkF3jlz/view?usp=drive_link](https://i.imgur.com/0qqsNIa.jpeg))
 
 ### 📧 Personal QR Codes
 No more physical ID cards or paper slips.
