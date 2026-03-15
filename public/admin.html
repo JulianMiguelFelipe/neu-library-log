@@ -22,6 +22,7 @@
             background-attachment: fixed;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             min-height: 100vh;
+            display: none; /* Only change: Hide body by default to prevent snap-back flash */
         }
 
         .navbar { 
@@ -301,14 +302,22 @@ async function checkSession() {
     try {
         const res = await fetch('/api/admin/full-data');
         if (res.status === 403) {
-            window.location.href = "/admin-login.html";
+            window.location.replace("/admin-login.html");
+            return false;
         }
-    } catch(e) {}
+        document.body.style.display = 'block'; // Show body only if authorized
+        return true;
+    } catch(e) {
+        window.location.replace("/admin-login.html");
+        return false;
+    }
 }
 setInterval(checkSession, 300000);
 
 async function loadDashboard() {
-    await checkSession();
+    const isAuth = await checkSession();
+    if (!isAuth) return;
+    
     try {
         const res = await fetch('/api/admin/full-data');
         const data = await res.json();
