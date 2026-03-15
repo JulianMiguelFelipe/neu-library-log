@@ -22,7 +22,6 @@
             background-attachment: fixed;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             min-height: 100vh;
-            display: none; /* Keeps the page hidden until authorized */
         }
 
         .navbar { 
@@ -98,6 +97,7 @@
 
         .badge { padding: 0.5em 0.8em; border-radius: 6px; font-weight: 500; }
         
+        /* Custom scrollbar for the modal */
         .modal-content-custom::-webkit-scrollbar { width: 6px; }
         .modal-content-custom::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
     </style>
@@ -297,30 +297,7 @@ let allAnalytics = {};
 let currentGraphMode = 'Student'; 
 let programChart, yearChart;
 
-// Optimized session check to run immediately
-async function checkSession() {
-    try {
-        const res = await fetch('/api/admin/full-data');
-        if (res.status === 403) {
-            window.location.replace("/admin-login.html");
-            return false;
-        }
-        document.body.style.display = 'block'; 
-        return true;
-    } catch(e) {
-        window.location.replace("/admin-login.html");
-        return false;
-    }
-}
-
-// Frequent background checks
-setInterval(checkSession, 300000);
-
 async function loadDashboard() {
-    // Check session before doing anything else
-    const authorized = await checkSession();
-    if (!authorized) return;
-
     try {
         const res = await fetch('/api/admin/full-data');
         const data = await res.json();
