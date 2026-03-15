@@ -59,12 +59,6 @@ A powerful tool for library staff to manage the space.
 
 ---
 
-## 👥 Contributor
-
-- **Julian Miguel Felipe**  
-- **Kazleen June Caballero ** 
-- **Ricardo Gian Herrero**  
----
 
 ## 🚀 Getting Started (Local Setup)
 
@@ -86,3 +80,6 @@ npm install
 
 # Start the server
 npm start
+
+# Open the server
+Then visit localhost:3000 in your browser.
