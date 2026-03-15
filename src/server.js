@@ -36,8 +36,8 @@ app.use(session({
 
 app.use(cors());
 app.use(express.json());
-// Updated path to reach public folder from src/
-app.use(express.static(path.join(__dirname, '../../public'), { index: 'index.html' }));
+// Path updated to reach public folder from src/ (one level up)
+app.use(express.static(path.join(__dirname, '../public'), { index: 'index.html' }));
 
 initDb();
 
@@ -59,8 +59,8 @@ app.post('/api/admin/login', (req, res) => {
 
 app.get('/admin.html', (req, res) => {
     if (req.session.isAdmin) {
-        // Updated path to reach public folder from src/
-        res.sendFile(path.join(__dirname, '../../public/admin.html'));
+        // Path updated to reach public folder from src/ (one level up)
+        res.sendFile(path.join(__dirname, '../public/admin.html'));
     } else {
         res.redirect('/admin-login.html');
     }
