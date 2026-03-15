@@ -1,7 +1,13 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+// SSL is required for connecting to Render's managed PostgreSQL
+const pool = new Pool({ 
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
+});
 
 const initDb = async () => {
     try {
@@ -25,6 +31,22 @@ const initDb = async () => {
                 purpose TEXT NOT NULL,
                 visit_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+
+            -- Required for connect-pg-simple session storage on Render
+            CREATE TABLE IF NOT EXISTS "session" (
+                "sid" varchar NOT NULL COLLATE "default",
+                "sess" json NOT NULL,
+                "expire" timestamp(6) NOT NULL
+            ) WITH (OIDS=FALSE);
+            
+            DO $$ 
+            BEGIN 
+                IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'session_pkey') THEN
+                    ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+                END IF;
+            END $$;
+
+            CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
         `);
         console.log("✅ Database schema verified.");
     } catch (err) { console.error("❌ Database Init Error:", err.message); }

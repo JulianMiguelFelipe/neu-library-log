@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const session = require('express-session');
-const nodemailer = require('nodemailer'); // Added
+const pgSession = require('connect-pg-simple')(session); 
+const nodemailer = require('nodemailer'); 
 const { pool, initDb } = require('./db');
 require('dotenv').config();
 
@@ -14,22 +15,34 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'wanechpi@gmail.com',
-        pass: 'wsklzgyipmhgyqfp' // Your provided App Password
+        pass: 'wsklzgyipmhgyqfp' 
     }
 });
 
 app.use(session({
-    secret: 'neu-library-secret-key',
+    store: new pgSession({
+        pool : pool,                
+        tableName : 'session'       
+    }),
+    secret: process.env.SESSION_SECRET || 'neu-library-secret-key',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 3600000 } 
+    cookie: { 
+        maxAge: 3600000, 
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    } 
 }));
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../public'), { index: 'index.html' }));
+// Updated path to reach public folder from src/
+app.use(express.static(path.join(__dirname, '../../public'), { index: 'index.html' }));
 
 initDb();
+
+// Render Health Check
+app.get('/health', (req, res) => res.sendStatus(200));
 
 // --- ADMIN AUTHENTICATION ---
 app.post('/api/admin/login', (req, res) => {
@@ -46,7 +59,8 @@ app.post('/api/admin/login', (req, res) => {
 
 app.get('/admin.html', (req, res) => {
     if (req.session.isAdmin) {
-        res.sendFile(path.join(__dirname, '../public/admin.html'));
+        // Updated path to reach public folder from src/
+        res.sendFile(path.join(__dirname, '../../public/admin.html'));
     } else {
         res.redirect('/admin-login.html');
     }
@@ -73,16 +87,13 @@ app.post('/api/register', async (req, res) => {
     const full_name = `${firstName} ${lastName}`;
     
     try {
-        // 1. Insert into DB
         await pool.query(
             `INSERT INTO users (full_name, email, role, program, year_level, department, position) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
             [full_name, email, role, program, yearLevel, department, position]
         );
 
-        // 2. Prepare QR Code URL (This encodes the email into a QR image)
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(email)}`;
 
-        // 3. Send Email via Nodemailer
         const mailOptions = {
             from: '"NEU Library" <wanechpi@gmail.com>',
             to: email,
@@ -101,7 +112,6 @@ app.post('/api/register', async (req, res) => {
             `
         };
 
-        // Fire and forget email so it doesn't slow down the response
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) console.log("Email Error: ", error);
             else console.log("Email Sent: " + info.response);
@@ -161,4 +171,4 @@ app.post('/api/admin/user/block', async (req, res) => {
     } catch (err) { res.status(500).send(err.message); }
 });
 
-app.listen(PORT, () => console.log(`🚀 Server on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server on port ${PORT}`));
