@@ -97,7 +97,6 @@
 
         .badge { padding: 0.5em 0.8em; border-radius: 6px; font-weight: 500; }
         
-        /* Custom scrollbar for the modal */
         .modal-content-custom::-webkit-scrollbar { width: 6px; }
         .modal-content-custom::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
     </style>
@@ -299,7 +298,15 @@ let programChart, yearChart;
 
 async function loadDashboard() {
     try {
-        const res = await fetch('/api/admin/full-data');
+        const res = await fetch('/api/admin/full-data', {
+            credentials: 'include' // THIS IS KEY: Sends login cookies with the request
+        });
+        
+        if (res.status === 403) {
+            console.error("Access Denied: You need to log in via admin-login.html first.");
+            return;
+        }
+
         const data = await res.json();
         rawLogs = data.logs;
         allAnalytics = data.analytics;
@@ -423,7 +430,12 @@ function renderTable(data) {
 }
 
 async function manageUser(id) {
-    await fetch('/api/admin/user/block', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({id}) });
+    await fetch('/api/admin/user/block', { 
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json'}, 
+        credentials: 'include',
+        body: JSON.stringify({id}) 
+    });
     loadDashboard();
 }
 
