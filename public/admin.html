@@ -73,7 +73,7 @@
         .btn-warning { background-color: var(--neu-yellow); border: none; color: #333; font-weight: 600; }
         .btn-warning:hover { background-color: #e6b800; }
 
-        #filterModal { 
+        #filterModal, #historyModal { 
             display: none; 
             position: fixed; 
             z-index: 1050; 
@@ -156,18 +156,36 @@
 
     <div class="card p-3 mb-3">
         <div class="row g-3">
-            <div class="col-md-9">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="text-muted"></i></span>
-                    <input type="text" id="tableSearch" class="form-control border-start-0" placeholder="Search by name or email..." oninput="applyFilter()">
-                </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold small text-muted">Search Name/Email</label>
+                <input type="text" id="tableSearch" class="form-control" placeholder="Search..." oninput="applyFilter()">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold small text-muted">Purpose</label>
+                <input type="text" id="purposeSearch" class="form-control" placeholder="Reason..." oninput="applyFilter()">
             </div>
             <div class="col-md-3">
+                <label class="form-label fw-bold small text-muted">Date Range</label>
+                <div class="input-group">
+                    <input type="date" id="startDate" class="form-control" onchange="applyFilter()">
+                    <input type="date" id="endDate" class="form-control" onchange="applyFilter()">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold small text-muted">Time Frame</label>
                 <select id="timeSort" class="form-select fw-semibold" onchange="applyFilter()">
                     <option value="all">All Time</option>
-                    <option value="day">Today / Past 24h</option>
+                    <option value="day">Today</option>
                     <option value="week">This Week</option>
                     <option value="month">This Month</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold small text-muted">Sort Alphabetical</label>
+                <select id="alphaSort" class="form-select fw-semibold" onchange="applyFilter()">
+                    <option value="none">Default (Recent)</option>
+                    <option value="asc">A to Z</option>
+                    <option value="desc">Z to A</option>
                 </select>
             </div>
         </div>
@@ -187,6 +205,48 @@
                 </thead>
                 <tbody id="logItems"></tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<div id="historyModal">
+    <div class="modal-content-custom">
+        <div id="historyMainView">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0 text-primary">Visitor Profile & History</h5>
+                <button class="btn-close" onclick="closeHistory()"></button>
+            </div>
+            <div class="text-center mb-4">
+                <h4 id="historyName" class="fw-bold mb-0">---</h4>
+                <p id="historyEmail" class="text-muted small">---</p>
+                <div class="p-3 bg-light rounded-3 mt-2">
+                    <span class="stat-label">Total Visits</span>
+                    <div class="h3 fw-bold text-primary mb-0" id="historyCount">0</div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h6 class="fw-bold small text-muted text-uppercase mb-3">Recent Visit History</h6>
+                <div id="historyList" class="small" style="max-height: 200px; overflow-y: auto;"></div>
+            </div>
+            <div class="d-grid gap-2">
+                <button class="btn btn-outline-danger fw-bold" onclick="showDeleteConfirm()">Remove Records & Account</button>
+                <button class="btn btn-secondary" onclick="closeHistory()">Close</button>
+            </div>
+        </div>
+
+        <div id="deleteConfirmView" style="display: none;" class="text-center py-4">
+            <div class="text-danger mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                    <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+                    <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+                </svg>
+            </div>
+            <h5 class="fw-bold">Are you absolutely sure?</h5>
+            <p class="text-muted small">This will permanently delete the account and all visit records. This action cannot be undone.</p>
+            <div class="d-grid gap-2 mt-4">
+                <button class="btn btn-danger fw-bold" id="finalDeleteBtn">Yes, Delete Everything</button>
+                <button class="btn btn-light" onclick="hideDeleteConfirm()">Cancel</button>
+            </div>
         </div>
     </div>
 </div>
@@ -211,7 +271,7 @@
             <div class="mb-3">
                 <label class="form-label fw-bold small text-muted">Program/Course</label>
                 <select id="filterProgram" class="form-select shadow-sm">
-                    <option value="" selected disabled>Select Program</option>
+                    <option value="All">All Programs</option>
                     <option value="BSIT">BSIT (Information Technology)</option>
                     <option value="BSCS">BSCS (Computer Science)</option>
                     <option value="BSIS">BSIS (Information Systems)</option>
@@ -299,22 +359,36 @@ let programChart, yearChart;
 async function loadDashboard() {
     try {
         const res = await fetch('/api/admin/full-data');
-        
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`Server error: ${res.status} - ${text}`);
+        }
         const data = await res.json();
         rawLogs = data.logs;
         allAnalytics = data.analytics;
-
         document.getElementById('stat-day').innerText = data.stats.day || 0;
         document.getElementById('stat-week').innerText = data.stats.week || 0;
         document.getElementById('stat-month').innerText = data.stats.month || 0;
-
         updateCharts();
         renderTable(rawLogs);
-    } catch (e) { console.error("Error loading data", e); }
+    } catch (e) { 
+        console.error("Error loading dashboard:", e);
+    }
 }
 
 function openFilter() { document.getElementById('filterModal').style.display = 'block'; }
 function closeFilter() { document.getElementById('filterModal').style.display = 'none'; }
+function closeHistory() { document.getElementById('historyModal').style.display = 'none'; }
+
+function showDeleteConfirm() {
+    document.getElementById('historyMainView').style.display = 'none';
+    document.getElementById('deleteConfirmView').style.display = 'block';
+}
+
+function hideDeleteConfirm() {
+    document.getElementById('historyMainView').style.display = 'block';
+    document.getElementById('deleteConfirmView').style.display = 'none';
+}
 
 function toggleFilterFields() {
     const role = document.getElementById('filterRole').value;
@@ -334,21 +408,16 @@ function toggleGraphData() {
 function updateCharts() {
     if (programChart) programChart.destroy();
     if (yearChart) yearChart.destroy();
-
     const dataSet = (currentGraphMode === 'Student') ? allAnalytics.students : allAnalytics.faculty;
-    
     const barLabels = currentGraphMode === 'Student' ? dataSet.programs.map(p => p.program) : dataSet.depts.map(d => d.department);
     const barData = currentGraphMode === 'Student' ? dataSet.programs.map(p => p.count) : dataSet.depts.map(d => d.count);
-
     const pieLabels = currentGraphMode === 'Student' ? dataSet.years.map(y => y.year_level) : dataSet.positions.map(p => p.position);
     const pieData = currentGraphMode === 'Student' ? dataSet.years.map(y => y.count) : dataSet.positions.map(p => p.count);
-
     programChart = new Chart(document.getElementById('programChart'), {
         type: 'bar',
         data: { labels: barLabels, datasets: [{ label: 'Visitors', data: barData, backgroundColor: '#004a99' }] },
         options: { maintainAspectRatio: false }
     });
-
     yearChart = new Chart(document.getElementById('yearChart'), {
         type: 'pie',
         data: { labels: pieLabels, datasets: [{ data: pieData, backgroundColor: ['#ffcc00', '#004a99', '#28a745', '#dc3545', '#17a2b8'] }] },
@@ -358,6 +427,11 @@ function updateCharts() {
 
 function applyFilter() {
     const searchTerm = document.getElementById('tableSearch').value.toLowerCase();
+    const purposeTerm = document.getElementById('purposeSearch').value.toLowerCase();
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const alphaSort = document.getElementById('alphaSort').value;
+    
     const timeSort = document.getElementById('timeSort').value;
     const role = document.getElementById('filterRole').value;
     const prog = document.getElementById('filterProgram').value;
@@ -367,13 +441,29 @@ function applyFilter() {
 
     const now = new Date();
 
-    const filtered = rawLogs.filter(l => {
+    let filtered = rawLogs.filter(l => {
         const matchesSearch = l.full_name.toLowerCase().includes(searchTerm) || l.email.toLowerCase().includes(searchTerm);
+        const matchesPurpose = l.purpose.toLowerCase().includes(purposeTerm);
+        
         const logDate = new Date(l.visit_time);
         let matchesTime = true;
+        
+        // Time Sort Check
         if (timeSort === 'day') matchesTime = (now - logDate) < (24 * 60 * 60 * 1000);
         else if (timeSort === 'week') matchesTime = (now - logDate) < (7 * 24 * 60 * 60 * 1000);
         else if (timeSort === 'month') matchesTime = (now - logDate) < (30 * 24 * 60 * 60 * 1000);
+
+        // Exact Date Range Check
+        if (startDate) {
+            const start = new Date(startDate);
+            start.setHours(0,0,0,0);
+            if (logDate < start) matchesTime = false;
+        }
+        if (endDate) {
+            const end = new Date(endDate);
+            end.setHours(23,59,59,999);
+            if (logDate > end) matchesTime = false;
+        }
 
         const matchesRole = (role === 'All' || l.role === role);
         let matchesSub = true;
@@ -382,15 +472,27 @@ function applyFilter() {
         } else if (role === 'Faculty') {
             matchesSub = (dept === 'All' || l.department === dept) && (pos === 'All' || l.position === pos);
         }
-        return matchesSearch && matchesTime && matchesRole && matchesSub;
+        return matchesSearch && matchesPurpose && matchesTime && matchesRole && matchesSub;
     });
 
+    // Alphabetical Sorting
+    if (alphaSort === 'asc') {
+        filtered.sort((a, b) => a.full_name.localeCompare(b.full_name));
+    } else if (alphaSort === 'desc') {
+        filtered.sort((a, b) => b.full_name.localeCompare(a.full_name));
+    }
+
     renderTable(filtered);
-    closeFilter();
+    // Don't close filter if we are just using the main search bar inputs
+    if (event && event.type !== 'input') closeFilter();
 }
 
 function resetFilters() {
     document.getElementById('tableSearch').value = '';
+    document.getElementById('purposeSearch').value = '';
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('alphaSort').value = 'none';
     document.getElementById('timeSort').value = 'all';
     document.getElementById('filterRole').value = 'All';
     document.getElementById('filterProgram').value = 'All';
@@ -416,10 +518,50 @@ function renderTable(data) {
             <td><span class="badge bg-light text-dark border">${l.purpose}</span></td>
             <td><small class="text-muted">${new Date(l.visit_time).toLocaleString()}</small></td>
             <td class="text-center">
-                <button class="btn btn-sm ${l.is_blocked ? 'btn-success' : 'btn-danger'} px-3 rounded-pill fw-bold" onclick="manageUser(${l.user_id})">${l.is_blocked ? 'Unblock' : 'Block'}</button>
+                <div class="d-flex justify-content-center gap-1">
+                    <button class="btn btn-sm btn-outline-primary px-2 rounded-pill fw-bold" onclick="viewHistory('${l.email}', '${l.full_name}', ${l.user_id})">View</button>
+                    <button class="btn btn-sm ${l.is_blocked ? 'btn-success' : 'btn-danger'} px-2 rounded-pill fw-bold" onclick="manageUser(${l.user_id})">${l.is_blocked ? 'Unblock' : 'Block'}</button>
+                </div>
             </td>
         </tr>
     `).join('');
+}
+
+function viewHistory(email, name, id) {
+    hideDeleteConfirm();
+    const history = rawLogs.filter(l => l.email === email);
+    document.getElementById('historyName').innerText = name;
+    document.getElementById('historyEmail').innerText = email;
+    document.getElementById('historyCount').innerText = history.length;
+    document.getElementById('historyList').innerHTML = history.map(h => `
+        <div class="border-bottom py-2">
+            <div class="d-flex justify-content-between">
+                <span class="fw-bold">${h.purpose}</span>
+                <span class="text-muted">${new Date(h.visit_time).toLocaleDateString()}</span>
+            </div>
+        </div>
+    `).join('') || '<p class="text-center text-muted">No visits found.</p>';
+    document.getElementById('finalDeleteBtn').onclick = () => deleteUser(id);
+    document.getElementById('historyModal').style.display = 'block';
+}
+
+async function deleteUser(id) {
+    try {
+        const res = await fetch('/api/admin/user/delete', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ id: Number(id) })
+        });
+        if (res.ok) {
+            closeHistory();
+            loadDashboard();
+        } else {
+            console.error("Delete failed");
+            alert("Delete failed.");
+        }
+    } catch (e) { 
+        console.error("Network error:", e); 
+    }
 }
 
 async function manageUser(id) {
