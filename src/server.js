@@ -10,15 +10,20 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// FIX: Updated to use Environment Variables and explicit port settings for Render
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
-    secure: true, // Use SSL/TLS
+    secure: true, 
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS 
-    }
+        user: 'wanechpi@gmail.com',
+        pass: 'wsklzgyipmhgyqfp' 
+    },
+    // This is the critical fix for ENETUNREACH on Render
+    connectionTimeout: 10000,
+    dnsTimeout: 5000,
+    socketTimeout: 10000,
+    // Forces IPv4
+    family: 4 
 });
 
 app.use(session({
