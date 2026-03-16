@@ -10,11 +10,14 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// FIX: Updated to use Environment Variables and explicit port settings for Render
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // Use SSL/TLS
     auth: {
-        user: 'wanechpi@gmail.com',
-        pass: 'wsklzgyipmhgyqfp' 
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS 
     }
 });
 
@@ -87,7 +90,7 @@ app.post('/api/register', async (req, res) => {
         );
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(email)}`;
         const mailOptions = {
-            from: '"NEU Library" <wanechpi@gmail.com>',
+            from: `"NEU Library" <${process.env.EMAIL_USER}>`,
             to: email,
             subject: 'NEU Library Access QR Code',
             html: `<div style="font-family: Arial; text-align: center;"><h2>Welcome!</h2><img src="${qrUrl}" width="200"></div>`
