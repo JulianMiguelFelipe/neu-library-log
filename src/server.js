@@ -11,21 +11,16 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const transporter = nodemailer.createTransport({
-    host: '74.125.204.108', 
+    host: 'smtp.gmail.com', 
     port: 587,
-    secure: false, 
+    secure: false, // TLS
     auth: {
         user: 'wanechpi@gmail.com',
         pass: 'nitoytbhvprupftl' 
     },
-
     tls: {
-        rejectUnauthorized: false,
-        servername: 'smtp.gmail.com'
-    },
-    connectionTimeout: 10000,
-    dnsTimeout: 5000,
-    socketTimeout: 10000
+        rejectUnauthorized: false
+    }
 });
 
 app.use(session({
@@ -91,9 +86,10 @@ app.post('/api/register', async (req, res) => {
             `INSERT INTO users (full_name, email, role, program, year_level, department, position) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
             [full_name, email, role, program, yearLevel, department, position]
         );
+        
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(email)}`;
         const mailOptions = {
-            from: `"NEU Library" <${process.env.EMAIL_USER}>`,
+            from: `"NEU Library" <wanechpi@gmail.com>`,
             to: email,
             subject: 'NEU Library Access QR Code',
             html: `
@@ -110,9 +106,13 @@ app.post('/api/register', async (req, res) => {
             `
         };
 
-        transporter.sendMail(mailOptions);
+        await transporter.sendMail(mailOptions);
+        
         res.status(201).json({ success: true });
-    } catch (err) { res.status(500).json({ error: err.message }); }
+    } catch (err) { 
+        console.error("Registration Error:", err.message);
+        res.status(500).json({ error: err.message }); 
+    }
 });
 
 app.post('/api/record-entry', async (req, res) => {
