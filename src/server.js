@@ -18,12 +18,13 @@ const transporter = nodemailer.createTransport({
         user: 'wanechpi@gmail.com',
         pass: 'nitoytbhvprupftl' 
     },
-
+    
+    dnsLookup: (hostname, options, callback) => {
+        require('dns').lookup(hostname, { family: 4 }, callback);
+    },
     connectionTimeout: 10000,
     dnsTimeout: 5000,
-    socketTimeout: 10000,
-
-    family: 4 
+    socketTimeout: 10000
 });
 
 app.use(session({
