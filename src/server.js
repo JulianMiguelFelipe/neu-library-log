@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Initialize Resend with your API Key
-const resend = new Resend('re_nitoytbhvprupftl'); 
+const resend = new Resend('re_CCo885z5_Cr9ipmPDGjUSDKNdrtzW5Tzp'); 
 
 app.use(session({
     store: new pgSession({
@@ -79,10 +79,9 @@ app.post('/api/register', async (req, res) => {
         
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(email)}`;
 
-        // Documentation implementation: resend.emails.send
         const { data, error } = await resend.emails.send({
             from: 'Library <onboarding@resend.dev>',
-            to: [email], // Documentation uses array or string
+            to: [email],
             subject: 'NEU Library Access QR Code',
             html: `
                 <div style="font-family: Arial, sans-serif; text-align: center; color: #333; padding: 20px; border: 1px solid #ddd; border-radius: 10px; max-width: 500px; margin: auto;">
@@ -100,7 +99,6 @@ app.post('/api/register', async (req, res) => {
 
         if (error) {
             console.error("Email Error:", error);
-            // We still respond success because the user IS saved in the DB
             return res.status(201).json({ success: true, warning: "User saved but email failed" });
         }
         
