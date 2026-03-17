@@ -10,7 +10,6 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Initialize Resend with your API Key
 const resend = new Resend('re_CCo885z5_Cr9ipmPDGjUSDKNdrtzW5Tzp'); 
 
 app.use(session({
