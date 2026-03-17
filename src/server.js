@@ -11,16 +11,17 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
+    host: '74.125.204.108', 
     port: 465,
     secure: true, 
     auth: {
         user: 'wanechpi@gmail.com',
-        pass: 'nitoytbhvprupftl' 
+        pass: 'wsklzgyipmhgyqfp' 
     },
-    
-    dnsLookup: (hostname, options, callback) => {
-        require('dns').lookup(hostname, { family: 4 }, callback);
+
+    tls: {
+        rejectUnauthorized: false,
+        servername: 'smtp.gmail.com'
     },
     connectionTimeout: 10000,
     dnsTimeout: 5000,
