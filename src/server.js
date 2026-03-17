@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
     secure: true, 
     auth: {
         user: 'wanechpi@gmail.com',
-        pass: 'wsklzgyipmhgyqfp' 
+        pass: 'nitoytbhvprupftl' 
     },
 
     tls: {
@@ -109,6 +109,7 @@ app.post('/api/register', async (req, res) => {
                 </div>
             `
         };
+
         transporter.sendMail(mailOptions);
         res.status(201).json({ success: true });
     } catch (err) { res.status(500).json({ error: err.message }); }
