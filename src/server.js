@@ -3,25 +3,15 @@ const cors = require('cors');
 const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session); 
-const nodemailer = require('nodemailer'); 
+const { Resend } = require('resend'); // Changed from nodemailer
 const { pool, initDb } = require('./db');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com', 
-    port: 587,
-    secure: false, // TLS
-    auth: {
-        user: 'wanechpi@gmail.com',
-        pass: 'nitoytbhvprupftl' 
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
-});
+// Initialize Resend with your API Key
+const resend = new Resend('re_CCo885z5_Cr9ipmPDGjUSDKNdrtzW5Tzp'); 
 
 app.use(session({
     store: new pgSession({
@@ -88,8 +78,10 @@ app.post('/api/register', async (req, res) => {
         );
         
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(email)}`;
-        const mailOptions = {
-            from: `"NEU Library" <wanechpi@gmail.com>`,
+
+        // Send email via Resend API
+        await resend.emails.send({
+            from: 'Library <onboarding@resend.dev>',
             to: email,
             subject: 'NEU Library Access QR Code',
             html: `
@@ -104,9 +96,7 @@ app.post('/api/register', async (req, res) => {
                     <p style="font-size: 0.8rem; margin-top: 20px; color: #b30000;"><b>Please save this image or take a screenshot on your phone.</b></p>
                 </div>
             `
-        };
-
-        await transporter.sendMail(mailOptions);
+        });
         
         res.status(201).json({ success: true });
     } catch (err) { 

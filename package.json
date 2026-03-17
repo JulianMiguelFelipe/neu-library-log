@@ -18,7 +18,8 @@
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "nodemailer": "^8.0.2",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "resend": "^6.9.4"
   },
   "repository": {
     "type": "git",
