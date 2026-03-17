@@ -3,14 +3,15 @@ const cors = require('cors');
 const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session); 
-const { Resend } = require('resend'); // Changed from nodemailer
+const { Resend } = require('resend'); // SDK from your documentation image
 const { pool, initDb } = require('./db');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const resend = new Resend('re_CCo885z5_Cr9ipmPDGjUSDKNdrtzW5Tzp'); 
+// Initialize Resend with your API Key
+const resend = new Resend('re_nitoytbhvprupftl'); 
 
 app.use(session({
     store: new pgSession({
@@ -78,10 +79,10 @@ app.post('/api/register', async (req, res) => {
         
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(email)}`;
 
-        // Send email via Resend API
-        await resend.emails.send({
+        // Documentation implementation: resend.emails.send
+        const { data, error } = await resend.emails.send({
             from: 'Library <onboarding@resend.dev>',
-            to: email,
+            to: [email], // Documentation uses array or string
             subject: 'NEU Library Access QR Code',
             html: `
                 <div style="font-family: Arial, sans-serif; text-align: center; color: #333; padding: 20px; border: 1px solid #ddd; border-radius: 10px; max-width: 500px; margin: auto;">
@@ -96,6 +97,12 @@ app.post('/api/register', async (req, res) => {
                 </div>
             `
         });
+
+        if (error) {
+            console.error("Email Error:", error);
+            // We still respond success because the user IS saved in the DB
+            return res.status(201).json({ success: true, warning: "User saved but email failed" });
+        }
         
         res.status(201).json({ success: true });
     } catch (err) { 
