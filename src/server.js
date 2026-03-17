@@ -3,15 +3,11 @@ const cors = require('cors');
 const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session); 
-const { Resend } = require('resend'); // SDK from your documentation image
 const { pool, initDb } = require('./db');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Initialize Resend with your API Key
-const resend = new Resend('re_CCo885z5_Cr9ipmPDGjUSDKNdrtzW5Tzp'); 
 
 app.use(session({
     store: new pgSession({
@@ -77,31 +73,7 @@ app.post('/api/register', async (req, res) => {
             [full_name, email, role, program, yearLevel, department, position]
         );
         
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(email)}`;
-
-        const { data, error } = await resend.emails.send({
-            from: 'Library <onboarding@resend.dev>',
-            to: [email],
-            subject: 'NEU Library Access QR Code',
-            html: `
-                <div style="font-family: Arial, sans-serif; text-align: center; color: #333; padding: 20px; border: 1px solid #ddd; border-radius: 10px; max-width: 500px; margin: auto;">
-                    <h2 style="color: #004a99;">Welcome to NEU Library!</h2>
-                    <p>Hello <b>${firstName}</b>, your registration is successful.</p>
-                    <p>Use the QR code below to log your visit quickly at the library kiosk:</p>
-                    <div style="margin: 25px 0;">
-                        <img src="${qrUrl}" alt="Your QR Code" style="border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 200px; height: 200px;">
-                    </div>
-                    <p style="font-size: 0.9rem; color: #666;">Account: ${email}</p>
-                    <p style="font-size: 0.8rem; margin-top: 20px; color: #b30000;"><b>Please save this image or take a screenshot on your phone.</b></p>
-                </div>
-            `
-        });
-
-        if (error) {
-            console.error("Email Error:", error);
-            return res.status(201).json({ success: true, warning: "User saved but email failed" });
-        }
-        
+        // Email logic removed per instructions. Backend now returns success immediately.
         res.status(201).json({ success: true });
     } catch (err) { 
         console.error("Registration Error:", err.message);

@@ -7,6 +7,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("Ypm-3ZCOlib67Z1GWsEY");
+        })();
+    </script>
 </head>
 <body class="registration-page">
 <div class="reg-card">
@@ -112,8 +119,7 @@
             <button type="submit" id="submitBtn" class="btn btn-primary w-100 mt-4 py-2 fw-bold">Create Profile & Get QR</button>
         </form>
     </div>
-    <div id="qr-result">
-        <div class="text-center">
+    <div id="qr-result" style="display:none;"> <div class="text-center">
             <div class="mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#198754" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
@@ -136,6 +142,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const emailField = document.getElementById('email');
     emailField.value = urlParams.get('email') || "";
+
     function toggleRoleFields() {
         const role = document.getElementById('role').value;
         const studentFields = document.getElementById('student-fields');
@@ -147,15 +154,20 @@
         document.getElementById('department').required = (role === 'Faculty');
         document.getElementById('position').required = (role === 'Faculty');
     }
+
     document.getElementById('regForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitBtn = document.getElementById('submitBtn');
+        
         submitBtn.disabled = true;
-        submitBtn.innerText = "Sending Email...";
+        submitBtn.innerText = "Saving Profile...";
+
         const role = document.getElementById('role').value;
         const email = emailField.value;
+        const firstName = document.getElementById('firstName').value;
+
         const payload = {
-            firstName: document.getElementById('firstName').value,
+            firstName: firstName,
             lastName: document.getElementById('lastName').value,
             email: email,
             role: role,
@@ -164,23 +176,45 @@
             department: role === 'Faculty' ? document.getElementById('department').value : null,
             position: role === 'Faculty' ? document.getElementById('position').value : null
         };
+
         try {
+
             const response = await fetch('/api/register', { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify(payload) 
             });
+
             if (response.ok) { 
-                document.getElementById('display-email').innerText = email;
-                document.getElementById('form-container').style.display = 'none';
-                document.getElementById('qr-result').style.display = 'block';
-                new QRCode(document.getElementById("qrcode"), {
-                    text: email,
-                    width: 200,
-                    height: 200,
-                    colorDark : "#004a99",
-                    colorLight : "#ffffff"
+
+                submitBtn.innerText = "Sending Email...";
+                
+                emailjs.send("service_c0qzivb", "template_mpsikdd", {
+                    firstName: firstName,
+                    email: email
+                }, "pm-3ZCOlib67Z1GWs")
+                .then(() => {
+                    console.log("Email sent!");
+                })
+                .catch((err) => {
+                    console.error("EmailJS error:", err);
+
+                })
+                .finally(() => {
+
+                    document.getElementById('display-email').innerText = email;
+                    document.getElementById('form-container').style.display = 'none';
+                    document.getElementById('qr-result').style.display = 'block';
+                    
+                    new QRCode(document.getElementById("qrcode"), {
+                        text: email,
+                        width: 200,
+                        height: 200,
+                        colorDark : "#004a99",
+                        colorLight : "#ffffff"
+                    });
                 });
+
             } else {
                 alert("Registration failed. Please try again.");
                 submitBtn.disabled = false;
@@ -188,6 +222,7 @@
             }
         } catch (error) {
             console.error("Connection error:", error);
+            alert("Connection error. Is the server running?");
             submitBtn.disabled = false;
             submitBtn.innerText = "Create Profile & Get QR";
         }
