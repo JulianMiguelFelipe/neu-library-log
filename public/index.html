@@ -69,7 +69,7 @@
             0% { transform: translateY(30px); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
         }
-        #welcome-view.active {
+        #welcome-view.active, #admin-choice-view.active {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -108,6 +108,17 @@
         @keyframes stroke { 100% { stroke-dashoffset: 0; } }
         @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
         @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 50px #7ac142; } }
+
+        /* NEW ADMIN CHOICE STYLES */
+        .choice-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 40px;
+            width: 600px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -138,6 +149,17 @@
             </div>
 
             <div class="mt-5 text-white-50 small" style="letter-spacing: 1px;">Press <span class="text-white fw-bold">[SPACEBAR]</span> to continue</div>
+        </div>
+    </div>
+
+    <div id="admin-choice-view" class="view">
+        <div class="choice-card">
+            <h2 class="text-white mb-4">Admin Detected</h2>
+            <p class="text-white-50 mb-5">Would you like to manage the library or record a normal visit?</p>
+            <div class="d-grid gap-3">
+                <button class="btn btn-warning btn-lg fw-bold" onclick="window.location.href = '/admin-login.html'">Open Admin Dashboard</button>
+                <button class="btn btn-outline-light btn-lg" onclick="proceedToPurpose()">Log Normal Visit</button>
+            </div>
         </div>
     </div>
 
@@ -233,17 +255,31 @@
         async function handleLogin() {
             const email = emailInput.value.toLowerCase().trim();
             const errorElement = document.getElementById('login-error');
-            const adminEmails = ['cics.dean@neu.edu.ph', 'admin@neu.edu.ph'];
+            const adminEmails = ['jcesperanza@neu.edu.ph', 'admin@neu.edu.ph'];
             
             if (!email) return;
 
-            if (adminEmails.includes(email)) {
-                window.location.href = "/admin-login.html";
-                return;
-            }
             if (!email.endsWith('@neu.edu.ph')) {
                 errorElement.style.display = 'block';
                 return;
+            } else {
+                errorElement.style.display = 'none';
+            }
+
+            if (adminEmails.includes(email)) {
+                const response = await fetch('/api/check-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await response.json();
+                
+                if (data.exists) {
+                    currentUser = data.user;
+                }
+            
+                showView('admin-choice-view');
+                return; 
             }
 
             const response = await fetch('/api/check-user', {
@@ -260,6 +296,17 @@
             } else {
                 window.location.href = `register.html?email=${email}`;
             }
+        }
+
+        function proceedToPurpose() {
+            if (!currentUser) {
+                const email = emailInput.value.toLowerCase().trim();
+                window.location.href = `register.html?email=${email}`;
+                return;
+            }
+            
+            if (currentUser.is_blocked) showView('banned-view');
+            else showView('purpose-view');
         }
 
         function showView(viewId) {

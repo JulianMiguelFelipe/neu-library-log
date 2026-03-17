@@ -16,13 +16,13 @@ const transporter = nodemailer.createTransport({
     secure: true, 
     auth: {
         user: 'wanechpi@gmail.com',
-        pass: 'wsklzgyipmhgyqfp' 
+        pass: 'nitoytbhvprupftl' 
     },
-    // This is the critical fix for ENETUNREACH on Render
+
     connectionTimeout: 10000,
     dnsTimeout: 5000,
     socketTimeout: 10000,
-    // Forces IPv4
+
     family: 4 
 });
 
@@ -44,7 +44,7 @@ app.use(session({
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public'), { index: 'index.html' }));
-
+app.use(express.urlencoded({ extended: true }));
 initDb();
 
 app.get('/health', (req, res) => res.sendStatus(200));
@@ -52,8 +52,8 @@ app.get('/health', (req, res) => res.sendStatus(200));
 // --- ADMIN AUTHENTICATION ---
 app.post('/api/admin/login', (req, res) => {
     const { user, pass } = req.body;
-    const adminPass = 'password123'; 
-    const privilegedUsers = ['admin', 'cics.dean@neu.edu.ph', 'admin@neu.edu.ph'];
+    const adminPass = '12345'; 
+    const privilegedUsers = ['admin','jcesperanza@neu.edu.ph'];
 
     if (privilegedUsers.includes(user.toLowerCase()) && pass === adminPass) {
         req.session.isAdmin = true;
@@ -72,12 +72,8 @@ app.get('/admin.html', (req, res) => {
 
 // --- KIOSK ENDPOINTS ---
 app.post('/api/check-user', async (req, res) => {
-    const { email } = req.body;
-    const restricted = ['cics.dean@neu.edu.ph', 'admin@neu.edu.ph'];
-    if(restricted.includes(email.toLowerCase())) {
-        return res.status(403).json({ error: "Please use Admin Login" });
-    }
     try {
+        const { email } = req.body;
         const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
         if (result.rows.length > 0) {
             res.json({ exists: true, user: result.rows[0] });
@@ -98,7 +94,18 @@ app.post('/api/register', async (req, res) => {
             from: `"NEU Library" <${process.env.EMAIL_USER}>`,
             to: email,
             subject: 'NEU Library Access QR Code',
-            html: `<div style="font-family: Arial; text-align: center;"><h2>Welcome!</h2><img src="${qrUrl}" width="200"></div>`
+            html: `
+                <div style="font-family: Arial, sans-serif; text-align: center; color: #333; padding: 20px; border: 1px solid #ddd; border-radius: 10px; max-width: 500px; margin: auto;">
+                    <h2 style="color: #004a99;">Welcome to NEU Library!</h2>
+                    <p>Hello <b>${firstName}</b>, your registration is successful.</p>
+                    <p>Use the QR code below to log your visit quickly at the library kiosk:</p>
+                    <div style="margin: 25px 0;">
+                        <img src="${qrUrl}" alt="Your QR Code" style="border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 200px; height: 200px;">
+                    </div>
+                    <p style="font-size: 0.9rem; color: #666;">Account: ${email}</p>
+                    <p style="font-size: 0.8rem; margin-top: 20px; color: #b30000;"><b>Please save this image or take a screenshot on your phone.</b></p>
+                </div>
+            `
         };
         transporter.sendMail(mailOptions);
         res.status(201).json({ success: true });
