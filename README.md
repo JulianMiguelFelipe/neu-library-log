@@ -20,7 +20,6 @@ The **NEU Library Log** is a professional digital check-in ecosystem designed to
 > [!IMPORTANT]
 > **Database Availability:** This trial deployment is active until **April 14, 2026**, because i'm using a free trial database service.  
 > **Loading Note:** As this is hosted on a free tier, the server may need 1-3 mins to "wake up" upon your first visit.
-> **Loading Note:** As this is hosted on a free tier, the server may need 1-3 mins to "wake up" upon your first visit.
 
 > [!CAUTION]
 > ***Usage Guidelines:***
