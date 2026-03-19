@@ -187,14 +187,14 @@
         </div>
         <div class="col-md-6 mb-3">
             <div class="card p-4 h-100">
-                <h6 id="barLabel" class="fw-bold text-secondary mb-3">By Program</h6>
-                <div class="chart-container"><canvas id="programChart"></canvas></div>
+                <h6 id="barLabel" class="fw-bold text-secondary mb-3">By College</h6>
+                <div class="chart-container"><canvas id="mainBarChart"></canvas></div>
             </div>
         </div>
         <div class="col-md-6 mb-3">
             <div class="card p-4 h-100">
-                <h6 id="pieLabel" class="fw-bold text-secondary mb-3">By Year Level</h6>
-                <div class="chart-container"><canvas id="yearChart"></canvas></div>
+                <h6 id="pieLabel" class="fw-bold text-secondary mb-3">By Program</h6>
+                <div class="chart-container"><canvas id="subPieChart"></canvas></div>
             </div>
         </div>
     </div>
@@ -264,6 +264,7 @@
             <div class="text-center mb-4">
                 <h4 id="historyName" class="fw-bold mb-0">---</h4>
                 <p id="historyEmail" class="text-muted small">---</p>
+                <div id="historyProfileInfo" class="text-muted small mb-3"></div>
                 <div class="p-3 bg-light rounded-3 mt-2">
                     <span class="stat-label">Total Visits</span>
                     <div class="h3 fw-bold text-primary mb-0" id="historyCount">0</div>
@@ -300,12 +301,10 @@
     <div class="modal-content-custom">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="fw-bold mb-0 text-primary">Advanced Filters</h5>
-             
             <button class="btn-close" onclick="closeFilter()"></button>
         </div>
         
         <div class="mb-3">
-            
             <label class="form-label fw-bold small text-muted">Filter by Role</label>
             <select id="filterRole" class="form-select shadow-sm" onchange="toggleFilterFields()">
                 <option value="All">All Roles</option>
@@ -313,88 +312,91 @@
                 <option value="Faculty">Faculty</option>
             </select>
         </div>
-<h8>Filters apply on PDF export.</h8>
+        
+        <h6 class="small text-muted mb-3">Filters apply on PDF export.</h6>
+
         <div id="studentFilters" style="display:none;">
+            <div class="mb-3">
+                <label class="form-label fw-bold small text-muted">College</label>
+                <select id="filterCollege" class="form-select shadow-sm" onchange="updateProgramFilterOptions()">
+                    <option value="All">All Colleges</option>
+                    <option value="CICS">College of Informatics and Computing Studies (CICS)</option>
+                    <option value="CEA">College of Engineering and Architecture (CEA)</option>
+                    <option value="Medicine">College of Medicine</option>
+                    <option value="Nursing">College of Nursing</option>
+                    <option value="MedTech">College of Medical Technology</option>
+                    <option value="PT">College of Physical Therapy</option>
+                    <option value="RT">College of Respiratory Therapy</option>
+                    <option value="Midwifery">College of Midwifery</option>
+                    <option value="Accountancy">College of Accountancy</option>
+                    <option value="CBA">College of Business Administration</option>
+                    <option value="Criminology">College of Criminology</option>
+                    <option value="Law">College of Law</option>
+                    <option value="CAS">College of Arts and Sciences</option>
+                    <option value="Communication">College of Communication</option>
+                    <option value="Education">College of Education</option>
+                    <option value="Music">College of Music</option>
+                    <option value="Agriculture">College of Agriculture</option>
+                </select>
+            </div>
             <div class="mb-3">
                 <label class="form-label fw-bold small text-muted">Program/Course</label>
                 <select id="filterProgram" class="form-select shadow-sm">
                     <option value="All">All Programs</option>
-                    <option value="BSIT">BSIT (Information Technology)</option>
-                    <option value="BSCS">BSCS (Computer Science)</option>
-                    <option value="BSIS">BSIS (Information Systems)</option>
-                    <option value="BSA">BSA (Accountancy)</option>
-                    <option value="BSBA">BSBA (Business Administration)</option>
-                    <option value="BS Entrep">BS Entrep (Entrepreneurship)</option>
-                    <option value="BS REM">BS REM (Real Estate Management)</option>
-                    <option value="BS Psych">BS Psych (Psychology)</option>
-                    <option value="BS Bio">BS Bio (Biology)</option>
-                    <option value="BA PolSci">BA PolSci (Political Science)</option>
-                    <option value="BA Econ">BA Econ (Economics)</option>
-                    <option value="BSCE">BSCE (Civil Engineering)</option>
-                    <option value="BSEE">BSEE (Electrical Engineering)</option>
-                    <option value="BSME">BSME (Mechanical Engineering)</option>
-                    <option value="BSECE">BSECE (Electronics Engineering)</option>
-                    <option value="BS Agriculture">BS Agriculture</option>
-                    <option value="BS Nursing">BS Nursing</option>
-                    <option value="BS Criminology">BS Criminology</option>
-                    <option value="BSEd">BSEd (Secondary Education)</option>
-                    <option value="BEEd">BEEd (Elementary Education)</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-bold small text-muted">Year Level</label>
-                <select id="filterYear" class="form-select shadow-sm">
-                    <option value="All">All Years</option>
-                    <option value="1st Year">1st Year</option>
-                    <option value="2nd Year">2nd Year</option>
-                    <option value="3rd Year">3rd Year</option>
-                    <option value="4th Year">4th Year</option>
                 </select>
             </div>
         </div>
 
-        <div id="facultyFilters" style="display:none;">
-            <div class="mb-3">
-                <label class="form-label fw-bold small text-muted">Department</label>
-                <select id="filterDept" class="form-select shadow-sm">
-                    <option value="All">All Departments</option>
-                    <option value="CICS">CICS</option><option value="CBA">CBA</option>
-                    <option value="CEA">CEA</option><option value="CIT">CIT</option>
-                    <option value="CMT">CMT</option><option value="COE">COE</option>
-                    <option value="CHS">CHS</option><option value="CAS">CAS</option>
-                    <option value="COL">COL</option><option value="CON">CON</option>
-                    <option value="CTE">CTE</option><option value="CFA">CFA</option>
-                    <option value="CPSPA">CPSPA</option><option value="CMA">CMA</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-bold small text-muted">Position</label>
-                <select id="filterPos" class="form-select shadow-sm">
-                    <option value="All">All Positions</option>
-                    <option value="President">President</option>
-                    <option value="Vice President">Vice President</option>
-                    <option value="Dean">Dean</option>
-                    <option value="Associate Dean">Associate Dean</option>
-                    <option value="Department Chair">Department Chair</option>
-                    <option value="Program Head / Coordinator">Program Head / Coordinator</option>
-                    <option value="Faculty Member / Professor">Faculty Member / Professor</option>
-                    <option value="Assistant Professor">Assistant Professor</option>
-                    <option value="Instructor / Lecturer">Instructor / Lecturer</option>
-                    <option value="Support Staff">Support Staff</option>
-                    <option value="Maintenance Staff">Maintenance Staff</option>
-                    <option value="General Services">General Services</option>
-                    <option value="Facilities Team">Facilities Team</option>
-                    <option value="Operations Staff">Operations Staff</option>
-                </select>
-            </div>
-        </div>
+<div id="facultyFilters" style="display:none;">
+    <div class="mb-3">
+        <label class="form-label fw-bold small text-muted">Department/College</label>
+        <select id="filterDept" class="form-select shadow-sm">
+            <option value="All">All Departments</option>
+            <option value="CICS">College of Informatics and Computing Studies</option>
+            <option value="CEA">College of Engineering and Architecture</option>
+            <option value="Medicine">College of Medicine</option>
+            <option value="Nursing">College of Nursing</option>
+            <option value="MedTech">College of Medical Technology</option>
+            <option value="PT">College of Physical Therapy</option>
+            <option value="RT">College of Respiratory Therapy</option>
+            <option value="Midwifery">College of Midwifery</option>
+            <option value="Accountancy">College of Accountancy</option>
+            <option value="CBA">College of Business Administration</option>
+            <option value="Criminology">College of Criminology</option>
+            <option value="Law">College of Law</option>
+            <option value="CAS">College of Arts and Sciences</option>
+            <option value="Communication">College of Communication</option>
+            <option value="Education">College of Education</option>
+            <option value="Music">College of Music</option>
+            <option value="Agriculture">College of Agriculture</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label fw-bold small text-muted">Position</label>
+        <select id="filterPos" class="form-select shadow-sm">
+            <option value="All">All Positions</option>
+            <option value="President">President</option>
+            <option value="Vice President">Vice President</option>
+            <option value="Dean">Dean</option>
+            <option value="Associate Dean">Associate Dean</option>
+            <option value="Department Chair">Department Chair</option>
+            <option value="Program Head / Coordinator">Program Head / Coordinator</option>
+            <option value="Faculty Member / Professor">Professor</option>
+            <option value="Assistant Professor">Assistant Professor</option>
+            <option value="Instructor / Lecturer">Instructor / Lecturer</option>
+            <option value="Support Staff">Support Staff</option>
+            <option value="General Services">General Services</option>
+            <option value="Facilities Team">Facilities Team</option>
+            <option value="Operations Staff">Operations Staff</option>
+        </select>
+    </div>
+</div>
 
         <div class="d-grid gap-2 mt-4">
             <button class="btn btn-primary py-2 fw-bold" onclick="applyFilter()">Apply Filters</button>
             <button class="btn btn-outline-secondary" onclick="closeFilter()">Cancel</button>
             <button class="btn btn-link btn-sm text-danger text-decoration-none mt-2" onclick="resetFilters()">Reset All Filters</button>
         </div>
-       
     </div>
 </div>
 
@@ -402,25 +404,71 @@
 let rawLogs = [];
 let allAnalytics = {};
 let currentGraphMode = 'Student'; 
-let programChart, yearChart;
+let barChart, pieChart;
+
+const htmlToDbMap = {
+    "College of Informatics and Computing Studies (CICS)": "CICS",
+    "College of Engineering and Architecture (CEA)": "CEA",
+    "College of Medicine": "Medicine",
+    "College of Nursing": "Nursing",
+    "College of Medical Technology": "MedTech",
+    "College of Physical Therapy": "PT",
+    "College of Respiratory Therapy": "RT",
+    "College of Midwifery": "Midwifery",
+    "College of Accountancy": "Accountancy",
+    "College of Business Administration": "CBA",
+    "College of Criminology": "Criminology",
+    "College of Law": "Law",
+    "College of Arts and Sciences": "CAS",
+    "College of Communication": "Communication",
+    "College of Education": "Education",
+    "College of Music": "Music",
+    "College of Agriculture": "Agriculture",
+    "College of Informatics and Computing Studies": "CICS",
+    "College of Engineering and Architecture": "CEA"
+};
+
+const dbToHtmlMap = Object.entries(htmlToDbMap).reduce((acc, [key, value]) => {
+    acc[value] = key;
+    return acc;
+}, {});
+
+const programData = {
+    "College of Informatics and Computing Studies (CICS)": ["BS Information Technology", "BS Computer Science", "BS Information Systems", "BS Entertainment and Multimedia Computing", "Bachelor of Library and Information Science"],
+    "College of Engineering and Architecture (CEA)": ["BS Architecture", "BS Civil Engineering", "BS Electrical Engineering", "BS Electronics Engineering", "BS Industrial Engineering", "BS Mechanical Engineering", "BS Astronomy"],
+    "College of Medicine": ["Doctor of Medicine"],
+    "College of Nursing": ["BS Nursing"],
+    "College of Medical Technology": ["BS Medical Technology"],
+    "College of Physical Therapy": ["BS Physical Therapy"],
+    "College of Respiratory Therapy": ["BS Respiratory Therapy"],
+    "College of Midwifery": ["Diploma in Midwifery"],
+    "College of Accountancy": ["BS Accountancy", "BS Accounting Information System"],
+    "College of Business Administration": ["BSBA major in Financial Management", "BSBA major in Human Resource Development Management", "BSBA major in Legal Management", "BSBA major in Marketing Management", "BS Entrepreneurship", "BS Real Estate Management"],
+    "College of Criminology": ["BS Criminology"],
+    "College of Law": ["Juris Doctor (JD)"],
+    "College of Arts and Sciences": ["BA Economics", "BA Political Science", "BS Biology", "BS Psychology", "Bachelor of Public Administration"],
+    "College of Communication": ["BA Communication", "BA Broadcasting", "BA Journalism"],
+    "College of Education": ["Bachelor of Elementary Education", "Bachelor of Secondary Education"],
+    "College of Music": ["Bachelor of Music"],
+    "College of Agriculture": ["BS Agriculture"]
+};
 
 async function loadDashboard() {
     try {
         const res = await fetch('/api/admin/full-data');
-        if (!res.ok) {
-            const text = await res.text();
-            throw new Error(`Server error: ${res.status} - ${text}`);
-        }
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
         const data = await res.json();
         rawLogs = data.logs;
         allAnalytics = data.analytics;
+        
         document.getElementById('stat-day').innerText = data.stats.day || 0;
         document.getElementById('stat-week').innerText = data.stats.week || 0;
         document.getElementById('stat-month').innerText = data.stats.month || 0;
+        
         updateCharts();
         renderTable(rawLogs);
     } catch (e) { 
-        console.error("Error loading dashboard:", e);
+        console.error("Error loading dashboard:", e); 
     }
 }
 
@@ -444,29 +492,43 @@ function toggleFilterFields() {
     document.getElementById('facultyFilters').style.display = (role === 'Faculty') ? 'block' : 'none';
 }
 
+function updateProgramFilterOptions() {
+    const college = document.getElementById('filterCollege').value;
+    const progSelect = document.getElementById('filterProgram');
+    progSelect.innerHTML = '<option value="All">All Programs</option>';
+    if(programData[college]) {
+        programData[college].forEach(p => progSelect.innerHTML += `<option value="${p}">${p}</option>`);
+    }
+}
+
 function toggleGraphData() {
     currentGraphMode = (currentGraphMode === 'Student') ? 'Faculty' : 'Student';
     document.getElementById('chartTitle').innerText = `Analytics: ${currentGraphMode}s`;
     document.getElementById('toggleGraphBtn').innerText = `Switch to ${currentGraphMode === 'Student' ? 'Faculty' : 'Student'} View`;
-    document.getElementById('barLabel').innerText = currentGraphMode === 'Student' ? 'By Program' : 'By Department';
-    document.getElementById('pieLabel').innerText = currentGraphMode === 'Student' ? 'By Year Level' : 'By Position';
+    document.getElementById('barLabel').innerText = currentGraphMode === 'Student' ? 'By College' : 'By Department';
+    document.getElementById('pieLabel').innerText = currentGraphMode === 'Student' ? 'By Program' : 'By Position';
     updateCharts();
 }
 
 function updateCharts() {
-    if (programChart) programChart.destroy();
-    if (yearChart) yearChart.destroy();
+    if (barChart) barChart.destroy();
+    if (pieChart) pieChart.destroy();
+    
     const dataSet = (currentGraphMode === 'Student') ? allAnalytics.students : allAnalytics.faculty;
-    const barLabels = currentGraphMode === 'Student' ? dataSet.programs.map(p => p.program) : dataSet.depts.map(d => d.department);
-    const barData = currentGraphMode === 'Student' ? dataSet.programs.map(p => p.count) : dataSet.depts.map(d => d.count);
-    const pieLabels = currentGraphMode === 'Student' ? dataSet.years.map(y => y.year_level) : dataSet.positions.map(p => p.position);
-    const pieData = currentGraphMode === 'Student' ? dataSet.years.map(y => y.count) : dataSet.positions.map(p => p.count);
-    programChart = new Chart(document.getElementById('programChart'), {
+    
+    const barLabels = currentGraphMode === 'Student' ? dataSet.colleges.map(c => c.college) : dataSet.depts.map(d => d.department);
+    const barData = currentGraphMode === 'Student' ? dataSet.colleges.map(c => c.count) : dataSet.depts.map(d => d.count);
+    
+    const pieLabels = currentGraphMode === 'Student' ? dataSet.programs.map(p => p.program) : dataSet.positions.map(p => p.position);
+    const pieData = currentGraphMode === 'Student' ? dataSet.programs.map(p => p.count) : dataSet.positions.map(p => p.count);
+
+    barChart = new Chart(document.getElementById('mainBarChart'), {
         type: 'bar',
         data: { labels: barLabels, datasets: [{ label: 'Visitors', data: barData, backgroundColor: '#004a99' }] },
         options: { maintainAspectRatio: false }
     });
-    yearChart = new Chart(document.getElementById('yearChart'), {
+    
+    pieChart = new Chart(document.getElementById('subPieChart'), {
         type: 'pie',
         data: { labels: pieLabels, datasets: [{ data: pieData, backgroundColor: ['#ffcc00', '#004a99', '#28a745', '#dc3545', '#17a2b8'] }] },
         options: { maintainAspectRatio: false }
@@ -476,18 +538,20 @@ function updateCharts() {
 function applyFilter() {
     const searchTerm = document.getElementById('tableSearch').value.toLowerCase();
     const purposeTerm = document.getElementById('purposeSearch').value.toLowerCase();
+    const role = document.getElementById('filterRole').value;
+    const selectedCol = document.getElementById('filterCollege').value;
+    const prog = document.getElementById('filterProgram').value;
+    const selectedDept = document.getElementById('filterDept').value;
+    const pos = document.getElementById('filterPos').value;
+    const alphaSort = document.getElementById('alphaSort').value;
+    const timeSort = document.getElementById('timeSort').value;
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
-    const alphaSort = document.getElementById('alphaSort').value;
-    
-    const timeSort = document.getElementById('timeSort').value;
-    const role = document.getElementById('filterRole').value;
-    const prog = document.getElementById('filterProgram').value;
-    const year = document.getElementById('filterYear').value;
-    const dept = document.getElementById('filterDept').value;
-    const pos = document.getElementById('filterPos').value;
 
     const now = new Date();
+
+    const dbCollegeCode = htmlToDbMap[selectedCol] || selectedCol;
+    const dbDeptCode = htmlToDbMap[selectedDept] || selectedDept;
 
     let filtered = rawLogs.filter(l => {
         const matchesSearch = l.full_name.toLowerCase().includes(searchTerm) || l.email.toLowerCase().includes(searchTerm);
@@ -495,44 +559,38 @@ function applyFilter() {
         
         const logDate = new Date(l.visit_time);
         let matchesTime = true;
-        
-        // Time Sort Check
         if (timeSort === 'day') matchesTime = (now - logDate) < (24 * 60 * 60 * 1000);
         else if (timeSort === 'week') matchesTime = (now - logDate) < (7 * 24 * 60 * 60 * 1000);
         else if (timeSort === 'month') matchesTime = (now - logDate) < (30 * 24 * 60 * 60 * 1000);
 
-        // Exact Date Range Check
         if (startDate) {
-            const start = new Date(startDate);
-            start.setHours(0,0,0,0);
+            const start = new Date(startDate); start.setHours(0,0,0,0);
             if (logDate < start) matchesTime = false;
         }
         if (endDate) {
-            const end = new Date(endDate);
-            end.setHours(23,59,59,999);
+            const end = new Date(endDate); end.setHours(23,59,59,999);
             if (logDate > end) matchesTime = false;
         }
 
         const matchesRole = (role === 'All' || l.role === role);
         let matchesSub = true;
+        
         if (role === 'Student') {
-            matchesSub = (prog === 'All' || l.program === prog) && (year === 'All' || l.year_level === year);
+            matchesSub = (selectedCol === 'All' || l.college === dbCollegeCode) && 
+                         (prog === 'All' || l.program === prog);
         } else if (role === 'Faculty') {
-            matchesSub = (dept === 'All' || l.department === dept) && (pos === 'All' || l.position === pos);
+            matchesSub = (selectedDept === 'All' || l.department === dbDeptCode) && 
+                         (pos === 'All' || (l.position && l.position.includes(pos)));
         }
+
         return matchesSearch && matchesPurpose && matchesTime && matchesRole && matchesSub;
     });
 
-    // Alphabetical Sorting
-    if (alphaSort === 'asc') {
-        filtered.sort((a, b) => a.full_name.localeCompare(b.full_name));
-    } else if (alphaSort === 'desc') {
-        filtered.sort((a, b) => b.full_name.localeCompare(a.full_name));
-    }
+    if (alphaSort === 'asc') filtered.sort((a, b) => a.full_name.localeCompare(b.full_name));
+    else if (alphaSort === 'desc') filtered.sort((a, b) => b.full_name.localeCompare(a.full_name));
 
     renderTable(filtered);
-    // Don't close filter if we are just using the main search bar inputs
-    if (event && event.type !== 'input') closeFilter();
+    closeFilter();
 }
 
 function resetFilters() {
@@ -543,8 +601,8 @@ function resetFilters() {
     document.getElementById('alphaSort').value = 'none';
     document.getElementById('timeSort').value = 'all';
     document.getElementById('filterRole').value = 'All';
+    document.getElementById('filterCollege').value = 'All';
     document.getElementById('filterProgram').value = 'All';
-    document.getElementById('filterYear').value = 'All';
     document.getElementById('filterDept').value = 'All';
     document.getElementById('filterPos').value = 'All';
     toggleFilterFields();
@@ -553,7 +611,11 @@ function resetFilters() {
 }
 
 function renderTable(data) {
-    document.getElementById('logItems').innerHTML = data.map(l => `
+    document.getElementById('logItems').innerHTML = data.map(l => {
+        // Translate the database code back to full name
+        const displayDept = dbToHtmlMap[l.college || l.department] || (l.college || l.department || 'N/A');
+        
+        return `
         <tr>
             <td class="ps-4">
                 <div class="fw-bold text-dark">${l.full_name}</div>
@@ -561,7 +623,11 @@ function renderTable(data) {
             </td>
             <td>
                 <span class="badge ${l.role === 'Student' ? 'bg-primary' : 'bg-warning text-dark'} mb-1">${l.role}</span><br>
-                <small class="text-secondary">${l.role === 'Student' ? l.program + ' - ' + l.year_level : (l.position || 'N/A') + ' (' + (l.department || 'N/A') + ')'}</small>
+                <small class="text-secondary">
+                    ${l.role === 'Student' 
+                        ? displayDept + ' - ' + (l.program || 'N/A') 
+                        : (l.position || 'N/A') + ' (' + displayDept + ')'}
+                </small>
             </td>
             <td><span class="badge bg-light text-dark border">${l.purpose}</span></td>
             <td><small class="text-muted">${new Date(l.visit_time).toLocaleString()}</small></td>
@@ -572,14 +638,25 @@ function renderTable(data) {
                 </div>
             </td>
         </tr>
-    `).join('');
+    `}).join('');
 }
 
 function viewHistory(email, name, id) {
     hideDeleteConfirm();
+    const userLog = rawLogs.find(l => l.email === email);
     const history = rawLogs.filter(l => l.email === email);
+    
+    if (!userLog) return;
+
+    // Translate the database code back to full name for the history view
+    const displayDept = dbToHtmlMap[userLog.college || userLog.department] || (userLog.college || userLog.department || 'N/A');
+
     document.getElementById('historyName').innerText = name;
     document.getElementById('historyEmail').innerText = email;
+    document.getElementById('historyProfileInfo').innerText = userLog.role === 'Student' 
+        ? `${displayDept} | ${userLog.program || 'N/A'}` 
+        : `${userLog.position || 'N/A'} | ${displayDept}`;
+    
     document.getElementById('historyCount').innerText = history.length;
     document.getElementById('historyList').innerHTML = history.map(h => `
         <div class="border-bottom py-2">
@@ -589,47 +666,109 @@ function viewHistory(email, name, id) {
             </div>
         </div>
     `).join('') || '<p class="text-center text-muted">No visits found.</p>';
+    
     document.getElementById('finalDeleteBtn').onclick = () => deleteUser(id);
     document.getElementById('historyModal').style.display = 'block';
 }
 
 async function deleteUser(id) {
     try {
-        const res = await fetch('/api/admin/user/delete', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ id: Number(id) })
+        const res = await fetch('/api/admin/user/delete', { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({ id: Number(id) }) 
         });
-        if (res.ok) {
-            closeHistory();
-            loadDashboard();
-        } else {
-            console.error("Delete failed");
-            alert("Delete failed.");
-        }
-    } catch (e) { 
-        console.error("Network error:", e); 
-    }
+        if (res.ok) { closeHistory(); loadDashboard(); }
+    } catch (e) { console.error(e); }
 }
 
 async function manageUser(id) {
-    await fetch('/api/admin/user/block', { 
-        method: 'POST', 
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify({id}) 
-    });
-    loadDashboard();
+    try {
+        await fetch('/api/admin/user/block', { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({id}) 
+        });
+        loadDashboard();
+    } catch (e) { console.error(e); }
 }
 
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text("NEU Library Visitor Log Report", 14, 15);
-    doc.autoTable({ html: '#logTable', startY: 20, columns: [0, 1, 2, 3] });
-    doc.save("NEU_Library_Report.pdf");
+    const doc = new jsPDF('p', 'mm', 'a4');
+    
+    const primaryColor = [0, 74, 153];
+    
+    doc.setFillColor(...primaryColor);
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("NEU LIBRARY", 14, 20);
+    
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text("Visitor Log Report", 14, 28);
+    
+    const exportDate = new Date().toLocaleString();
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${exportDate}`, 196, 20, { align: 'right' });
+
+    const currentRole = document.getElementById('filterRole').value;
+    doc.setTextColor(50, 50, 50);
+    doc.setFontSize(10);
+    doc.text(`Filter Applied: Role - ${currentRole}`, 14, 48);
+
+    doc.autoTable({
+        html: '#logTable',
+        startY: 55,
+        margin: { left: 14, right: 14 },
+        theme: 'striped',
+        styles: {
+            overflow: 'linebreak',
+            cellPadding: 3
+        },
+        headStyles: {
+            fillColor: primaryColor,
+            textColor: [255, 255, 255],
+            fontSize: 10,
+            fontStyle: 'bold',
+            halign: 'left'
+        },
+        bodyStyles: {
+            fontSize: 9,
+            textColor: [40, 40, 40],
+            valign: 'middle'
+        },
+        alternateRowStyles: {
+            fillColor: [245, 248, 255]
+        },
+        columnStyles: {
+            0: { cellWidth: 50 },
+            1: { cellWidth: 65 },
+            2: { cellWidth: 35 },
+            3: { cellWidth: 35 }
+        },
+        columns: [
+            { header: 'Visitor Info', dataKey: 0 },
+            { header: 'Affiliation', dataKey: 1 },
+            { header: 'Purpose', dataKey: 2 },
+            { header: 'Timestamp', dataKey: 3 }
+        ]
+    });
+
+    const pageCount = doc.internal.getNumberOfPages();
+    for(let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(9);
+        doc.setTextColor(150);
+        doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
+        doc.text("New Era University Library Management System", 14, 285);
+    }
+
+    doc.save(`NEU_Library_Report_${new Date().toLocaleDateString()}.pdf`);
 }
 
 loadDashboard();
 </script>
-</body>
-</html>

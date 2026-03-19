@@ -337,10 +337,14 @@
                 playSuccessSound();
                 document.getElementById('user-display-name').innerText = currentUser.full_name;
                 const status = currentUser.role === 'Student' 
-                    ? `${currentUser.year_level} ${currentUser.program}` 
+                    ? `${currentUser.program}` 
                     : `${currentUser.position} - ${currentUser.department}`;
                 document.getElementById('user-display-status').innerText = status;
                 showView('welcome-view');
+                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 5000);
             }
         }
 

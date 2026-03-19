@@ -65,12 +65,12 @@ app.post('/api/check-user', async (req, res) => {
 });
 
 app.post('/api/register', async (req, res) => {
-    const { firstName, lastName, email, role, program, yearLevel, department, position } = req.body;
+    const { firstName, lastName, email, role, college, program, department, position } = req.body;
     const full_name = `${firstName} ${lastName}`;
     try {
         await pool.query(
-            `INSERT INTO users (full_name, email, role, program, year_level, department, position) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-            [full_name, email, role, program, yearLevel, department, position]
+            `INSERT INTO users (full_name, email, role, college, program, department, position) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            [full_name, email, role, college, program, department, position]
         );
         
         // Email logic removed per instructions. Backend now returns success immediately.
@@ -92,10 +92,10 @@ app.post('/api/record-entry', async (req, res) => {
 // --- ADMIN ENDPOINTS ---
 app.get('/api/admin/full-data', async (req, res) => {
     try {
-        const logs = await pool.query(`SELECT logs.id as log_id, users.id as user_id, users.full_name, users.email, users.role, users.program, users.year_level, users.department, users.position, users.is_blocked, logs.purpose, logs.visit_time FROM logs JOIN users ON logs.user_id = users.id ORDER BY logs.visit_time DESC`);
+        const logs = await pool.query(`SELECT logs.id as log_id, users.id as user_id, users.full_name, users.email, users.role, users.college, users.program, users.department, users.position, users.is_blocked, logs.purpose, logs.visit_time FROM logs JOIN users ON logs.user_id = users.id ORDER BY logs.visit_time DESC`);
         const stats = await pool.query(`SELECT COUNT(*) FILTER (WHERE visit_time > NOW() - INTERVAL '1 day') as day, COUNT(*) FILTER (WHERE visit_time > NOW() - INTERVAL '1 week') as week, COUNT(*) FILTER (WHERE visit_time > NOW() - INTERVAL '1 month') as month FROM logs`);
         const sProg = await pool.query(`SELECT program, COUNT(*) FROM logs JOIN users ON logs.user_id = users.id WHERE users.role = 'Student' GROUP BY program`);
-        const sYear = await pool.query(`SELECT year_level, COUNT(*) FROM logs JOIN users ON logs.user_id = users.id WHERE users.role = 'Student' GROUP BY year_level`);
+        const sCollege = await pool.query(`SELECT college, COUNT(*) FROM logs JOIN users ON logs.user_id = users.id WHERE users.role = 'Student' GROUP BY college`);
         const fDept = await pool.query(`SELECT department, COUNT(*) FROM logs JOIN users ON logs.user_id = users.id WHERE users.role = 'Faculty' GROUP BY department`);
         const fPos = await pool.query(`SELECT position, COUNT(*) FROM logs JOIN users ON logs.user_id = users.id WHERE users.role = 'Faculty' GROUP BY position`);
 
@@ -103,7 +103,7 @@ app.get('/api/admin/full-data', async (req, res) => {
             logs: logs.rows, 
             stats: stats.rows[0], 
             analytics: { 
-                students: { programs: sProg.rows, years: sYear.rows }, 
+                students: { programs: sProg.rows, colleges: sCollege.rows }, 
                 faculty: { depts: fDept.rows, positions: fPos.rows } 
             } 
         });

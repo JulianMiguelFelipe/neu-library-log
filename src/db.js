@@ -1,7 +1,6 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-// SSL is required for connecting to Render's managed PostgreSQL
 const pool = new Pool({ 
     connectionString: process.env.DATABASE_URL,
     ssl: {
@@ -17,8 +16,8 @@ const initDb = async () => {
                 email TEXT UNIQUE NOT NULL,
                 full_name TEXT,
                 role TEXT,
+                college TEXT,
                 program TEXT,
-                year_level TEXT,
                 department TEXT,
                 position TEXT,
                 is_blocked BOOLEAN DEFAULT FALSE,
