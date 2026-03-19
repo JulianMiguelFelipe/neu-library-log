@@ -20,7 +20,6 @@ The **NEU Library Log** is a professional digital check-in ecosystem designed to
 > [!IMPORTANT]
 > **Database Availability:** This trial deployment is active until **April 14, 2026**, because i'm using a free trial database service.  
 > **Loading Note:** As this is hosted on a free tier, the server may need 1-3 mins to "wake up" upon your first visit.
-> **Loading Note:** As this is hosted on a free tier, the server may need 1-3 mins to "wake up" upon your first visit.
 
 > [!CAUTION]
 > ***Usage Guidelines:***
@@ -135,6 +134,22 @@ A powerful tool for library staff to manage the space and view usage data.
     <img src="./screenshots/controls.png" alt="Admin Controls" width="600">
   </a>
 </div>
+
+- **Filtered PDF Exports:** Need a physical report? Admins can filter the records for example, showing only "Faculty" entries or a specific date—and instantly export that data into a clean, downloadable PDF document.
+<div align="center">
+  <a href="./screenshots/pdf_filter.png">
+    <img src="./screenshots/pdf_filter.png" alt="Filtering Data" width="600">
+  </a>
+</div>
+<div align="center">
+  <a href="./screenshots/pdf_export.png">
+    <img src="./screenshots/pdf_export.png" alt="PDF Export Result" width="600">
+  </a>
+    <a href="./screenshots/pdf_export.png">
+    <img src="./screenshots/pdf.png" alt="PDF Export Result" width="600">
+  </a>
+</div>
+
 ---
 
 ## 📂 System Architecture
