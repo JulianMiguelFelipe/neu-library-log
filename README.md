@@ -135,6 +135,22 @@ A powerful tool for library staff to manage the space and view usage data.
     <img src="./screenshots/controls.png" alt="Admin Controls" width="600">
   </a>
 </div>
+
+- **Filtered PDF Exports:** Need a physical report? Admins can filter the records for example, showing only "Faculty" entries or a specific date—and instantly export that data into a clean, downloadable PDF document.
+<div align="center">
+  <a href="./screenshots/pdf_filter.png">
+    <img src="./screenshots/pdf_filter.png" alt="Filtering Data" width="600">
+  </a>
+</div>
+<div align="center">
+  <a href="./screenshots/pdf_export.png">
+    <img src="./screenshots/pdf_export.png" alt="PDF Export Result" width="600">
+  </a>
+    <a href="./screenshots/pdf_export.png">
+    <img src="./screenshots/pdf.png" alt="PDF Export Result" width="600">
+  </a>
+</div>
+
 ---
 
 ## 📂 System Architecture
