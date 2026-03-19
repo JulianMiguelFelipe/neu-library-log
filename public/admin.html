@@ -320,8 +320,8 @@
                 <label class="form-label fw-bold small text-muted">College</label>
                 <select id="filterCollege" class="form-select shadow-sm" onchange="updateProgramFilterOptions()">
                     <option value="All">All Colleges</option>
-                    <option value="CICS">College of Informatics and Computing Studies (CICS)</option>
-                    <option value="CEA">College of Engineering and Architecture (CEA)</option>
+                    <option value="CICS">College of Informatics and Computing Studies</option>
+                    <option value="CEA">College of Engineering and Architecture</option>
                     <option value="Medicine">College of Medicine</option>
                     <option value="Nursing">College of Nursing</option>
                     <option value="MedTech">College of Medical Technology</option>
@@ -423,9 +423,8 @@ const htmlToDbMap = {
     "College of Communication": "Communication",
     "College of Education": "Education",
     "College of Music": "Music",
-    "College of Agriculture": "Agriculture",
-    "College of Informatics and Computing Studies": "CICS",
-    "College of Engineering and Architecture": "CEA"
+    "College of Agriculture": "Agriculture"
+    // REMOVED THE DUPLICATES FROM HERE
 };
 
 const dbToHtmlMap = Object.entries(htmlToDbMap).reduce((acc, [key, value]) => {
@@ -493,11 +492,32 @@ function toggleFilterFields() {
 }
 
 function updateProgramFilterOptions() {
-    const college = document.getElementById('filterCollege').value;
+    const collegeSelect = document.getElementById('filterCollege');
     const progSelect = document.getElementById('filterProgram');
+    
+    const selectedValue = collegeSelect.value; // This gets "CICS", "CEA", etc.
+    console.log("Selected College Value:", selectedValue); // Debugging
+
+    // Clear existing options
     progSelect.innerHTML = '<option value="All">All Programs</option>';
-    if(programData[college]) {
-        programData[college].forEach(p => progSelect.innerHTML += `<option value="${p}">${p}</option>`);
+
+    if (selectedValue === "All") return;
+
+    // 1. Get the Full Name using your map
+    // We use .trim() just in case there are hidden spaces
+    const fullCollegeName = dbToHtmlMap[selectedValue.trim()];
+    console.log("Translated to Full Name:", fullCollegeName);
+
+    // 2. Populate the programs
+    if (fullCollegeName && programData[fullCollegeName]) {
+        programData[fullCollegeName].forEach(p => {
+            const option = document.createElement('option');
+            option.value = p;
+            option.textContent = p;
+            progSelect.appendChild(option);
+        });
+    } else {
+        console.error("Could not find programs for:", fullCollegeName);
     }
 }
 
