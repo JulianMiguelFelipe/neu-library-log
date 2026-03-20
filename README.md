@@ -1,6 +1,6 @@
-# 🏛️ NEU Library Log: Smart Visitor Management
+# 🏛️ NEU Library Visitor Log
 
-The **NEU Library Log** is a professional digital check-in ecosystem designed to replace inefficient paper logbooks. By leveraging institutional emails and dynamic QR code technology, it provides a seamless entry experience for students and faculty while equipping administrators with powerful data analytics and security controls.
+The **NEU Library Visitor Log** is a professional digital check-in ecosystem designed to replace inefficient paper logbooks. By using Institutional emails and QR code technology, it provides a seamless entry experience for students and faculty while equipping administrators with powerful data analytics and security controls.
 
 ---
 
@@ -29,126 +29,77 @@ The **NEU Library Log** is a professional digital check-in ecosystem designed to
 
 ---
 
-## ✨ How It Works: A System Walkthrough.
+## ✨ System Walkthrough
 
-### 🤳 Fast Check-In
-This is the "front door" of the system where users scan their codes or register.
+### 🤳 User Experience & Check-In
+<details>
+<summary><b>Click to view the visitor check-in & registration flow</b></summary>
 
-- **Instant Logging:** Check in under 5 seconds by simply entering your institutional email or scanning your personal QR code.
-<div align="center">
-  <a href="./screenshots/login.png">
-    <img src="./screenshots/login.png" alt="Check-in Screen" width="600">
-  </a>
-</div>
+The "front door" of the system allows for fast logging and automated registration detection.
 
-- **Digital Registration:** If you are a new user, the system will automatically detect your email and guide you to the registration page.
-<div align="center">
-  <a href="./screenshots/registration.png">
-    <img src="./screenshots/registration.png" alt="Registration Detection" width="600">
-  </a>
-</div>
+| Check-in Screen | Registration Detection |
+| :---: | :---: |
+| <img src="./screenshots/login.png" width="400"> | <img src="./screenshots/registration.png" width="400"> |
 
-- **Visit Purpose:** After logging in, users can quickly select their reason for visiting, such as "Research," "Study," or "Borrowing."
-<div align="center">
-  <a href="./screenshots/purpose.png">
-    <img src="./screenshots/purpose.png" alt="Purpose Selection" width="600">
-  </a>
-</div>
+| Purpose Selection | Welcome Message |
+| :---: | :---: |
+| <img src="./screenshots/purpose.png" width="400"> | <img src="./screenshots/welcome.png" width="400"> |
 
-- **Welcome Message:** Every visitor receives a personalized greeting to confirm their visit has been recorded.
-<div align="center">
-  <a href="./screenshots/welcome.png">
-    <img src="./screenshots/welcome.png" alt="Welcome Message" width="600">
-  </a>
-</div>
+- **Instant Logging:** Check in under 5 seconds via institutional email or personal QR code.
+- **Digital Registration:** Automatic detection and redirection for new users.
+- **Visit Purpose:** Quick categorization (Research, Study, Borrowing).
+</details>
 
 ---
 
 ### 📧 Personal QR Codes
+<details>
+<summary><b>Click to view QR code delivery and usage</b></summary>
+
 No more physical ID cards or messy paper slips.
 
-- **Auto-Email:** Upon successful registration, the system automatically sends a unique, permanent QR code to the user's email.
-<div align="center">
-  <a href="./screenshots/email_qr.png">
-    <img src="./screenshots/email_qr.png" alt="QR Email Sent" width="600">
-  </a>
-</div>
+| Auto-Email Delivery | Mobile QR Usage |
+| :---: | :---: |
+| <img src="./screenshots/email_qr.png" width="400"> | <img src="./screenshots/phone_qr.png" width="400"> |
 
-- **Always Available:** Users can simply save the QR code image to their phones for a contactless "scan-and-go" experience on all future visits.
-<div align="center">
-  <a href="./screenshots/phone_qr.png">
-    <img src="./screenshots/phone_qr.png" alt="Mobile QR Usage" width="600">
-  </a>
-</div>
+- **Auto-Email:** System automatically sends a unique, permanent QR code upon registration.
+- **Always Available:** Save to phone for a contactless "scan-and-go" experience.
+</details>
 
 ---
 
 ### 📊 Admin Insights Dashboard
-A powerful tool for library staff to manage the space and view usage data.
+<details>
+<summary><b>Click to view Admin Analytics & Controls</b></summary>
 
-- **Admin Detection:** If an authorized admin email is entered, the system offers a choice between opening the dashboard or logging a normal visit.
-<div align="center">
-  <a href="./screenshots/admin_detect.png">
-    <img src="./screenshots/admin_detect.png" alt="Admin Entry" width="600">
-  </a>
-</div>
+A powerful suite for library staff to monitor space usage and manage visitor data.
 
-- **Secure Login:** To protect sensitive data, the dashboard requires a username and password in case an admin email is ever compromised.
-<div align="center">
-  <a href="./screenshots/admin_login.png">
-    <img src="./screenshots/admin_login.png" alt="Admin Security" width="600">
-  </a>
-</div>
+#### 🔐 Security & Access
+| Admin Detection | Secure Login |
+| :---: | :---: |
+| <img src="./screenshots/admin_detect.png" width="400"> | <img src="./screenshots/admin_login.png" width="400"> |
 
-- **Metric Cards:** Real-time counters track library visitors for the day, week, and month in easy-to-read numeric cards.
-<div align="center">
-  <a href="./screenshots/metrics.png">
-    <img src="./screenshots/metrics.png" alt="Metric Cards" width="600">
-  </a>
-</div>
+#### 📈 Metrics & Analytics
+| Real-time Cards | Interactive Charts |
+| :---: | :---: |
+| <img src="./screenshots/metrics.png" width="400"> | <img src="./screenshots/charts.png" width="400"> |
 
-- **Analytics Charts:** The dashboard provides interactive bar and pie charts to visualize visitor data by department and position (Faculty vs. Student).
-<div align="center">
-  <a href="./screenshots/charts.png">
-    <img src="./screenshots/charts.png" alt="Analytics Charts" width="600">
-  </a>
-</div>
+#### 📋 Management & Logging
+| Visitor History Table | Search & Sort Toolbar |
+| :---: | :---: |
+| <img src="./screenshots/history.png" width="400"> | <img src="./screenshots/toolbar.png" width="400"> |
 
-- **History Table:** View detailed visitor records, including visit purposes, timestamps, and specific student details.
-<div align="center">
-  <a href="./screenshots/history.png">
-    <img src="./screenshots/history.png" alt="Visitor Logs" width="600">
-  </a>
-</div>
+#### 🛡️ Controls & Reporting
+| User Management | PDF Export Result |
+| :---: | :---: |
+| <img src="./screenshots/controls.png" width="400"> | <img src="./screenshots/pdf_export.png" width="400"> |
 
-- **Search & Sort Toolbar:** Admins can quickly locate records by searching names/emails or filtering by date ranges and visit purposes.
-<div align="center">
-  <a href="./screenshots/toolbar.png">
-    <img src="./screenshots/toolbar.png" alt="Search Toolbar" width="600">
-  </a>
-</div>
+- **Metric Cards:** Real-time counters for daily, weekly, and monthly traffic.
+- **Management Controls:** Built-in tools to **Block** users or **Delete** records.
+- **Filtered Exports:** Generate clean PDF reports based on specific roles or date ranges.
+</details>
 
-- **Management Controls:** Maintain security by using built-in controls to "Block" specific users or "Delete" outdated records.
-<div align="center">
-  <a href="./screenshots/controls.png">
-    <img src="./screenshots/controls.png" alt="Admin Controls" width="600">
-  </a>
-</div>
-
-- **Filtered PDF Exports:** Need a physical report? Admins can filter the records for example, showing only "Faculty" entries or a specific date—and instantly export that data into a clean, downloadable PDF document.
-<div align="center">
-  <a href="./screenshots/pdf_filter.png">
-    <img src="./screenshots/pdf_filter.png" alt="Filtering Data" width="600">
-  </a>
-</div>
-<div align="center">
-  <a href="./screenshots/pdf_export.png">
-    <img src="./screenshots/pdf_export.png" alt="PDF Export Result" width="600">
-  </a>
-    <a href="./screenshots/pdf_export.png">
-    <img src="./screenshots/pdf.png" alt="PDF Export Result" width="600">
-  </a>
-</div>
+---
 
 ---
 
@@ -208,3 +159,18 @@ A powerful tool for library staff to manage the space and view usage data.
    npm src/server.js start
 
 **The server will run on http://localhost:3000.**
+
+---
+
+## 🎓 School Project Info
+This is a midterm project for **Info Management 2** at **New Era University (NEU)**.
+
+### 📜 The "I'm Just a Student" License
+Honestly, this is just for a grade. You’re free to check out the code, fork it, or use it for your own inspiration, but:
+* **Don't use this for a real-life library yet** (it's a student project, not a professional work).
+* **Give credit** if you end up using parts of the logic for your own school assignments or atleast gib me money (gcash: 09544430404 🤣).
+* **Permission** You can fork it, tweak it, or show it to your mom. I don't care.
+* **You Need Help!?** Contact me here: felipejulianmiguel@gmail.com
+* **No Warranties** If it breaks, it breaks. 🤷‍♂️
+
+Created by *Julian Miguel I. Felipe.* | March 18, 2026
