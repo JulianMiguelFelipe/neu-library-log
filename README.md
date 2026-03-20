@@ -1,6 +1,6 @@
 # 🏛️ NEU Library Visitor Log
 
-The **NEU Library Visitor Log** is a professional digital check-in ecosystem designed to replace inefficient paper logbooks. By using Institutional emails and QR code technology, it provides a seamless entry experience for students and faculty while equipping administrators with powerful data analytics and security controls.
+The **NEU Library Visitor Log** is a digital check-in system designed to replace inefficient paper logbooks. By using Institutional emails and QR code technology, it provides a seamless entry experience for students and faculty while equipping administrators with powerful data analytics and security controls.
 
 ---
 
