@@ -15,6 +15,10 @@ The **NEU Library Visitor Log** is a digital check-in system designed to replace
   <p align="center">
     <i>To try out the admin dashboard use (admin@neu.edu.ph).</i>
   </p>
+  <p align="center">
+  <img src="https://api.visitorbadge.io/api/visitors?path=JulianMiguelFelipe.neu-library-log&label=TOTAL%20VISITS&countColor=%23004a99&style=flat-square" alt="Visitors" />
+  <img src="https://img.shields.io/uptimerobot/status/m802595025-cee4f71d1c1cb424451338d9?label=DEPLOYMENT&style=flat-square&colorSuccess=33cc33&colorCritical=ff4444&success_label=ACTIVE&failure_label=INACTIVE" alt="Deployment Status" />
+  </p>
 </div>
 
 > [!IMPORTANT]
